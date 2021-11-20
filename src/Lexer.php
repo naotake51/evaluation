@@ -3,8 +3,6 @@
 namespace Naotake51\Evaluation;
 
 use Naotake51\Evaluation\Nodes\Node;
-use Naotake51\Evaluation\Nodes\AdditiveNode;
-use Naotake51\Evaluation\Nodes\MultiplicativeNode;
 use Naotake51\Evaluation\Nodes\IntegerNode;
 use Naotake51\Evaluation\Nodes\FloatNode;
 use Naotake51\Evaluation\Nodes\StringNode;
