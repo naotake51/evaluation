@@ -50,3 +50,28 @@ $evaluation = new Evaluation([
 $result = $evaluation('hoge(1, 2)'); // => 'call hoge(1, 2)'
 ```
 
+# 引数型チェック
+
+arrayを渡す事で引数の型を定義することができます。
+'|'で区切ることでORを表現することも可能です。
+
+```
+$evaluation = new Evaluation([
+    'repeat' => [
+        'function' => function (array $arguments) {
+            return str_repeat($arguments[0], $arguments[1]);
+        },
+        'arguments' => ['string', 'numeric']
+    ]
+]);
+$result = $evaluation("repeat('abc', 3)"); // => 'abcabcabc'
+```
+
+|定義|説明|
+|---|---|
+|numeric|is_numericでチェックします。|
+|integer|is_integerでチェックします。|
+|float|is_floatでチェックします。|
+|string|is_stringでチェックします。|
+|bool|is_boolでチェックします。|
+|null|is_nullでチェックします。|

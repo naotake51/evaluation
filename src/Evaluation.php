@@ -14,21 +14,36 @@ class Evaluation {
     public function __construct(array $functions) {
         $this->functions = $functions + [
             // default functions
-            '__add' => function ($arguments) {
-                return $arguments[0] + $arguments[1];
-            },
-            '__sub' => function ($arguments) {
-                return $arguments[0] - $arguments[1];
-            },
-            '__mul' => function ($arguments) {
-                return $arguments[0] * $arguments[1];
-            },
-            '__div' => function ($arguments) {
-                return $arguments[0] / $arguments[1];
-            },
-            '__mod' => function ($arguments) {
-                return $arguments[0] % $arguments[1];
-            },
+            '__add' => [
+                'function' => function ($arguments) {
+                    return $arguments[0] + $arguments[1];
+                },
+                'arguments' => ['numeric', 'numeric']
+            ],
+            '__sub' => [
+                'function' => function ($arguments) {
+                    return $arguments[0] - $arguments[1];
+                },
+                'arguments' => ['numeric', 'numeric']
+            ],
+            '__mul' => [
+                'function' => function ($arguments) {
+                    return $arguments[0] * $arguments[1];
+                },
+                'arguments' => ['numeric', 'numeric']
+            ],
+            '__div' => [
+                'function' => function ($arguments) {
+                    return $arguments[0] / $arguments[1];
+                },
+                'arguments' => ['numeric', 'numeric']
+            ],
+            '__mod' => [
+                'function' => function ($arguments) {
+                    return $arguments[0] % $arguments[1];
+                },
+                'arguments' => ['numeric', 'numeric']
+            ],
         ];
     }
 
@@ -37,13 +52,19 @@ class Evaluation {
         $tokens = $parser($expression);
 
         $functions = $this->functions;
-        $callback = function ($identify, $arguments) use ($functions) {
+        $argumentValidator = new ArgumentValidator();
+        $callback = function ($identify, $arguments) use ($functions, $argumentValidator) {
             if (array_key_exists($identify, $functions)) {
-                return $functions[$identify]($arguments);
+                $function = $functions[$identify];
+                if (is_array($function)) {
+                    $argumentValidator($identify, $arguments, $function['arguments']);
+                    $function = $function['function'];
+                }
+                return $function($arguments);
             } else if (array_key_exists('*', $functions)) {
                 return $functions['*']($identify, $arguments);
             } else {
-                throw new \Exception("$identify is not exists function.");
+                throw new \Exception("function $identify is not exists");
             }
         };
         $lexer = new Lexer($callback);

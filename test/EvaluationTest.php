@@ -140,6 +140,28 @@ class EvaluationTest extends TestCase {
                 'expression' => '1 + 2',
                 'expected' => '__add(1,2)'
             ],
+            '引数の数が違う' => [
+                'functions' => [
+                    'hoge' => [
+                        'function' => function ($arguments) {
+                            return $arguments;
+                        },
+                        'arguments' => ['numeric', 'numeric']
+                    ]
+                ],
+                'expression' => 'hoge(1, 2, 3)',
+                'expected' => new \Exception('function hoge arguments not match 2.')
+            ],
+            '引数タイプ' => [
+                'functions' => [],
+                'expression' => '"1" + 2',
+                'expected' => 3
+            ],
+            '引数タイプエラー' => [
+                'functions' => [],
+                'expression' => '"aaa" + 2',
+                'expected' => new \Exception('function __add argument 1 need numeric type.')
+            ],
         ];
     }
 
@@ -167,5 +189,16 @@ class EvaluationTest extends TestCase {
         ]);
         $result = $evaluation('hoge(1, 2)'); // => 'call hoge(1, 2)'
         $this->assertSame('call hoge(1, 2)', $result);
+
+        $evaluation = new Evaluation([
+            'repeat' => [
+                'function' => function (array $arguments) {
+                    return str_repeat($arguments[0], $arguments[1]);
+                },
+                'arguments' => ['string', 'numeric']
+            ]
+        ]);
+        $result = $evaluation("repeat('abc', 3)"); // => 'abcabcabc'
+        $this->assertSame('abcabcabc', $result);
     }
 }
