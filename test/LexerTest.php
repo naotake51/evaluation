@@ -9,6 +9,7 @@ use Naotake51\Evaluation\Nodes\Node;
 use Naotake51\Evaluation\Nodes\NumberNode;
 use Naotake51\Evaluation\Nodes\AdditiveNode;
 use Naotake51\Evaluation\Nodes\MultiplicativeNode;
+use Naotake51\Evaluation\Nodes\FunctionNode;
 
 class LexerTest extends TestCase {
     /**
@@ -125,6 +126,106 @@ class LexerTest extends TestCase {
                 ],
                 'expected' => new \Exception('Syntax Error'),
             ],
-       ];
+            '関数' => [
+                'tokens' => [
+                    new Token('IDENT', 'hoge'),
+                    new Token('L_PAREN', '('),
+                    new Token('R_PAREN', ')'),
+                ],
+                'expected' => new FunctionNode('hoge', [])
+            ],
+            '関数 引数' => [
+                'tokens' => [
+                    new Token('IDENT', 'hoge'),
+                    new Token('L_PAREN', '('),
+                    new Token('NUMBER', '1'),
+                    new Token('R_PAREN', ')'),
+                ],
+                'expected' => new FunctionNode('hoge', [
+                    new NumberNode('1')
+                ])
+            ],
+            '関数 閉じ括弧なし' => [
+                'tokens' => [
+                    new Token('IDENT', 'hoge'),
+                    new Token('L_PAREN', '('),
+                    new Token('NUMBER', '1'),
+                ],
+                'expected' => new \Exception('Syntax Error'),
+            ],
+            '関数 引数 複数' => [
+                'tokens' => [
+                    new Token('IDENT', 'hoge'),
+                    new Token('L_PAREN', '('),
+                    new Token('NUMBER', '1'),
+                    new Token('COMMA', ','),
+                    new Token('NUMBER', '2'),
+                    new Token('COMMA', ','),
+                    new Token('NUMBER', '3'),
+                    new Token('R_PAREN', ')'),
+                ],
+                'expected' => new FunctionNode('hoge', [
+                    new NumberNode('1'),
+                    new NumberNode('2'),
+                    new NumberNode('3'),
+                ])
+            ],
+            '関数 引数が関数' => [
+                'tokens' => [
+                    new Token('IDENT', 'hoge'),
+                    new Token('L_PAREN', '('),
+                    new Token('NUMBER', '1'),
+                    new Token('COMMA', ','),
+                    new Token('NUMBER', '2'),
+                    new Token('COMMA', ','),
+                    new Token('IDENT', 'fuga'),
+                    new Token('L_PAREN', '('),
+                    new Token('NUMBER', '1'),
+                    new Token('R_PAREN', ')'),
+                    new Token('R_PAREN', ')'),
+                ],
+                'expected' => new FunctionNode('hoge', [
+                    new NumberNode('1'),
+                    new NumberNode('2'),
+                    new FunctionNode('fuga', [
+                        new NumberNode('1'),
+                    ])
+                ])
+            ],
+            '四則演算 + 関数' => [
+                'tokens' => [
+                    new Token('NUMBER', '1'),
+                    new Token('OPERATOR', '+'),
+                    new Token('IDENT', 'hoge'),
+                    new Token('L_PAREN', '('),
+                    new Token('NUMBER', '1'),
+                    new Token('OPERATOR', '+'),
+                    new Token('NUMBER', '2'),
+                    new Token('COMMA', ','),
+                    new Token('NUMBER', '2'),
+                    new Token('COMMA', ','),
+                    new Token('IDENT', 'fuga'),
+                    new Token('L_PAREN', '('),
+                    new Token('NUMBER', '1'),
+                    new Token('R_PAREN', ')'),
+                    new Token('R_PAREN', ')'),
+                ],
+                'expected' => new AdditiveNode(
+                    new NumberNode('1'),
+                    new FunctionNode('hoge', [
+                        new AdditiveNode(
+                            new NumberNode('1'),
+                            new NumberNode('2'),
+                            '+'
+                        ),
+                        new NumberNode('2'),
+                        new FunctionNode('fuga', [
+                            new NumberNode('1'),
+                        ])
+                    ]),
+                    '+'
+                )
+            ],
+      ];
     }
 }

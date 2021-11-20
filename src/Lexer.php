@@ -6,11 +6,13 @@ use Naotake51\Evaluation\Nodes\Node;
 use Naotake51\Evaluation\Nodes\AdditiveNode;
 use Naotake51\Evaluation\Nodes\MultiplicativeNode;
 use Naotake51\Evaluation\Nodes\NumberNode;
+use Naotake51\Evaluation\Nodes\FunctionNode;
 
 /**
  * expr    = mul ("+" mul | "-" mul)*
  * mul     = primary ("*" primary | "/" primary)*
- * primary = num | "(" expr ")"
+ * primary = num | "(" expr ")" | func
+ * func    = ident "(" (expr ("+" expr)*)? ")"
  *
  */
 class Lexer {
@@ -49,7 +51,9 @@ class Lexer {
     }
 
     private function primary(array $tokens, int $p): array {
-        if ($this->equal($tokens, $p, 'L_PAREN')) {
+        if ($this->equal($tokens, $p, 'NUMBER')) {
+            return [new NumberNode($tokens[$p]->expression), $p + 1];
+        } else if ($this->equal($tokens, $p, 'L_PAREN')) {
             $p++;
 
             [$expr, $p] = $this->expr($tokens, $p);
@@ -59,9 +63,28 @@ class Lexer {
 
             return [$expr, $p];
         } else {
-            $this->need($tokens, $p, 'NUMBER');
-            return [new NumberNode($tokens[$p]->expression), $p + 1];
+            return $this->func($tokens, $p);
         }
+    }
+
+    private function func(array $tokens, int $p): array {
+        $this->need($tokens, $p, 'IDENT');
+        $identify = $tokens[$p]->expression;
+        $p++;
+
+        $this->need($tokens, $p, 'L_PAREN');
+        $p++;
+
+        $arguments = [];
+        if (!$this->equal($tokens, $p, 'R_PAREN')) {
+            do {
+                [$argument, $p] = $this->expr($tokens, $p);
+                $arguments[] = $argument;
+            } while ($this->equal($tokens, $p, 'COMMA') && $p++);
+            $this->need($tokens, $p, 'R_PAREN');
+        }
+        $p++;
+        return [new FunctionNode($identify, $arguments), $p];
     }
 
     private function equal(array $tokens, int $p, string $type, $expression = null): bool {
