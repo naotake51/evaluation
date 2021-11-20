@@ -16,8 +16,12 @@ class EvaluationTest extends TestCase {
      * @dataProvider dataInvoke
      */
     public function testInvoke(string $expression, $expected): void {
+        $callback = function ($identify, $arguments) {
+            return $identify . '(' . implode(',', $arguments) . ')';
+        };
+
         try {
-            $evaluation = new Evaluation();
+            $evaluation = new Evaluation($callback);
             $result = $evaluation($expression);
             $this->assertSame($expected, $result);
         } catch (\Exception $e) {

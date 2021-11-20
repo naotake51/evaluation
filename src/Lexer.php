@@ -10,6 +10,7 @@ use Naotake51\Evaluation\Nodes\FloatNode;
 use Naotake51\Evaluation\Nodes\StringNode;
 use Naotake51\Evaluation\Nodes\BooleanNode;
 use Naotake51\Evaluation\Nodes\FunctionNode;
+use Closure;
 
 /**
  * expr    = mul ("+" mul | "-" mul)*
@@ -19,6 +20,12 @@ use Naotake51\Evaluation\Nodes\FunctionNode;
  *
  */
 class Lexer {
+    private Closure $callback;
+
+    public function __construct(Closure $callback) {
+        $this->callback = $callback;
+    }
+
     public function __invoke(array $tokens): ?Node {
         if (count($tokens) === 0) {
             return null;
@@ -93,7 +100,7 @@ class Lexer {
             $this->need($tokens, $p, 'R_PAREN');
         }
         $p++;
-        return [new FunctionNode($identify, $arguments), $p];
+        return [new FunctionNode($identify, $arguments, $this->callback), $p];
     }
 
     private function equal(array $tokens, int $p, string $type, $expression = null): bool {
