@@ -10,6 +10,7 @@ use Naotake51\Evaluation\Nodes\IntegerNode;
 use Naotake51\Evaluation\Nodes\FloatNode;
 use Naotake51\Evaluation\Nodes\StringNode;
 use Naotake51\Evaluation\Nodes\BooleanNode;
+use Naotake51\Evaluation\Nodes\ArrayNode;
 use Naotake51\Evaluation\Nodes\FunctionNode;
 use Naotake51\Evaluation\Errors\SyntaxError;
 
@@ -286,6 +287,38 @@ class LexerTest extends TestCase {
                     ]
                 )
             ],
-      ];
+            '配列' => [
+                'tokens' => [
+                    new Token('L_BRACKET', '['),
+                    new Token('INTEGER', '1'),
+                    new Token('COMMA', ','),
+                    new Token('INTEGER', '2'),
+                    new Token('COMMA', ','),
+                    new Token('INTEGER', '1'),
+                    new Token('OPERATOR', '*'),
+                    new Token('INTEGER', '1'),
+                    new Token('OPERATOR', '/'),
+                    new Token('INTEGER', '1'),
+                    new Token('R_BRACKET', ']'),
+                ],
+                'expected' => new ArrayNode([
+                    new IntegerNode('1'),
+                    new IntegerNode('2'),
+                    new FunctionNode(
+                        '__div',
+                        [
+                            new FunctionNode(
+                                '__mul',
+                                [
+                                    new IntegerNode('1'),
+                                    new IntegerNode('1'),
+                                ]
+                            ),
+                            new IntegerNode('1'),
+                        ]
+                    ),
+                ])
+            ],
+        ];
     }
 }

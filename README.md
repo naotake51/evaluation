@@ -19,6 +19,7 @@ $result = $evaluation('square(2) + square(2)'); // => 8
 |少数|0.5 .5|
 |論理|True true TRUE False  false FALSE|
 |文字列|"aaa" 'aaa' 'aa\\'aa\\\\aa'|
+|配列|[1, 2, [3, 4]]|
 
 ## マジック関数
 
@@ -74,6 +75,7 @@ $result = $evaluation("repeat('abc', 3)"); // => 'abcabcabc'
 |float|is_floatでチェックします。|
 |string|is_stringでチェックします。|
 |bool|is_boolでチェックします。|
+|array|is_arrayでチェックします。|
 |null|is_nullでチェックします。|
 
 ## 評価実行時エラー

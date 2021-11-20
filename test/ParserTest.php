@@ -108,6 +108,22 @@ class ParserTest extends TestCase {
                     new Token('R_PAREN', ')'),
                 ]
             ],
+            '配列' => [
+                'expression' => '[1, 2, 1 * 1 / 1]',
+                'expected' => [
+                    new Token('L_BRACKET', '['),
+                    new Token('INTEGER', '1'),
+                    new Token('COMMA', ','),
+                    new Token('INTEGER', '2'),
+                    new Token('COMMA', ','),
+                    new Token('INTEGER', '1'),
+                    new Token('OPERATOR', '*'),
+                    new Token('INTEGER', '1'),
+                    new Token('OPERATOR', '/'),
+                    new Token('INTEGER', '1'),
+                    new Token('R_BRACKET', ']'),
+                ]
+            ],
        ];
     }
 }

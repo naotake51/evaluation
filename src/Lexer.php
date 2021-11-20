@@ -8,6 +8,7 @@ use Naotake51\Evaluation\Nodes\IntegerNode;
 use Naotake51\Evaluation\Nodes\FloatNode;
 use Naotake51\Evaluation\Nodes\StringNode;
 use Naotake51\Evaluation\Nodes\BooleanNode;
+use Naotake51\Evaluation\Nodes\ArrayNode;
 use Naotake51\Evaluation\Nodes\FunctionNode;
 use Naotake51\Evaluation\Errors\SyntaxError;
 
@@ -16,7 +17,8 @@ use Naotake51\Evaluation\Errors\SyntaxError;
  *
  * expr    = mul ("+" mul | "-" mul)*
  * mul     = primary ("*" primary | "/" primary)*
- * primary = integer | float | string | boolean | "(" expr ")" | func
+ * primary = integer | float | string | boolean | array | "(" expr ")" | func
+ * array   = "[" (expr ("+" expr)*)? "]"
  * func    = ident "(" (expr ("+" expr)*)? ")"
  */
 class Lexer {
@@ -81,6 +83,8 @@ class Lexer {
             return [new StringNode($tokens[$p]->expression), $p + 1];
         } else if ($this->equal($tokens, $p, 'BOOLEAN')) {
             return [new BooleanNode($tokens[$p]->expression), $p + 1];
+        } else if ($this->equal($tokens, $p, 'L_BRACKET')) {
+            return $this->array($tokens, $p);
         } else if ($this->equal($tokens, $p, 'L_PAREN')) {
             $p++;
             [$expr, $p] = $this->expr($tokens, $p);
@@ -90,6 +94,22 @@ class Lexer {
         } else {
             return $this->func($tokens, $p);
         }
+    }
+
+    private function array(array $tokens, int $p): array {
+        $this->need($tokens, $p, 'L_BRACKET');
+        $p++;
+
+        $items = [];
+        if (!$this->equal($tokens, $p, 'R_BRACKET')) {
+            do {
+                [$item, $p] = $this->expr($tokens, $p);
+                $items[] = $item;
+            } while ($this->equal($tokens, $p, 'COMMA') && $p++);
+            $this->need($tokens, $p, 'R_BRACKET');
+        }
+        $p++;
+        return [new ArrayNode($items), $p];
     }
 
     private function func(array $tokens, int $p): array {

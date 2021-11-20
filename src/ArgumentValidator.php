@@ -50,6 +50,8 @@ class ArgumentValidator {
                 return true;
             } elseif ($type === 'bool' && is_bool($value)) {
                 return true;
+            } elseif ($type === 'array' && is_array($value)) {
+                return true;
             } elseif ($type === 'null' && is_null($value)) {
                 return true;
             }

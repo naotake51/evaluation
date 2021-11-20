@@ -28,6 +28,8 @@ class Parser {
         ['/^\./', 'OPERATOR'], // 文字列連結 NOTE:小数点数時より後である必要がある
         ['/^\(/', 'L_PAREN'],
         ['/^\)/', 'R_PAREN'],
+        ['/^\[/', 'L_BRACKET'],
+        ['/^\]/', 'R_BRACKET'],
         ['/^,/', 'COMMA'],
         ['/^[A-Za-z][A-Za-z_0-9]*/', 'IDENT'],
     ];

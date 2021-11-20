@@ -79,7 +79,7 @@ class EvaluationTest extends TestCase {
             ],
             '関数' => [
                 'functions' => [
-                    'hoge' => function ($arguments) {
+                    'hoge' => function (array $arguments) {
                         return 'hoge(' . implode(',', $arguments) . ')';
                     },
                 ],
@@ -88,7 +88,7 @@ class EvaluationTest extends TestCase {
             ],
             '関数 引数' => [
                 'functions' => [
-                    'hoge' => function ($arguments) {
+                    'hoge' => function (array $arguments) {
                         return 'hoge(' . implode(',', $arguments) . ')';
                     },
                 ],
@@ -97,7 +97,7 @@ class EvaluationTest extends TestCase {
             ],
             '関数 閉じ括弧なし' => [
                 'functions' => [
-                    'hoge' => function ($arguments) {
+                    'hoge' => function (array $arguments) {
                         return 'hoge(' . implode(',', $arguments) . ')';
                     },
                 ],
@@ -106,7 +106,7 @@ class EvaluationTest extends TestCase {
             ],
             '関数 引数 複数' => [
                 'functions' => [
-                    'hoge' => function ($arguments) {
+                    'hoge' => function (array $arguments) {
                         return 'hoge(' . implode(',', $arguments) . ')';
                     },
                 ],
@@ -115,10 +115,10 @@ class EvaluationTest extends TestCase {
             ],
             '関数 引数が関数' => [
                 'functions' => [
-                    'hoge' => function ($arguments) {
+                    'hoge' => function (array $arguments) {
                         return 'hoge(' . implode(',', $arguments) . ')';
                     },
-                    'fuga' => function ($arguments) {
+                    'fuga' => function (array $arguments) {
                         return 'fuga(' . implode(',', $arguments) . ')';
                     },
                 ],
@@ -127,7 +127,7 @@ class EvaluationTest extends TestCase {
             ],
             '未定義関数' => [
                 'functions' => [
-                    '*' => function ($identify, $arguments) {
+                    '*' => function (string $identify, array $arguments) {
                         return $identify . '(' . implode(',', $arguments) . ')';
                     }
                 ],
@@ -141,7 +141,7 @@ class EvaluationTest extends TestCase {
             ],
             'マジックメソッド オーバーライド' => [
                 'functions' => [
-                    '__add' => function ($arguments) {
+                    '__add' => function (array $arguments) {
                         return '__add(' . implode(',', $arguments) . ')';
                     }
                 ],
@@ -151,7 +151,7 @@ class EvaluationTest extends TestCase {
             '引数の数が違う' => [
                 'functions' => [
                     'hoge' => [
-                        'function' => function ($arguments) {
+                        'function' => function (array $arguments) {
                             return $arguments;
                         },
                         'arguments' => ['numeric', 'numeric']
@@ -163,13 +163,13 @@ class EvaluationTest extends TestCase {
             '関数定義複数 パラメーター定義' => [
                 'functions' => [
                     'hoge' => [
-                        'function' => function ($arguments) {
+                        'function' => function (array $arguments) {
                             return 'hoge(' . implode(',', $arguments) . ')';
                         },
                         'arguments' => ['integer', 'string', 'string']
                     ],
                     'fuga' => [
-                        'function' => function ($arguments) {
+                        'function' => function (array $arguments) {
                             return 'fuga(' . implode(',', $arguments) . ')';
                         },
                         'arguments' => ['bool']
@@ -203,7 +203,33 @@ class EvaluationTest extends TestCase {
                 'expression' => '(( 1 )))',
                 'expected' => new SyntaxError('syntax error.')
             ],
-        ];
+            '配列' => [
+                'functions' => [],
+                'expression' => '[1, 2, 1 * 1 / 1]',
+                'expected' => [1, 2, 1]
+            ],
+            '配列 関数要素' => [
+                'functions' => [
+                    'hoge' => function (array $arguments) {
+                        return 'hoge(' . implode(', ', $arguments) . ')';
+                    }
+                ],
+                'expression' => '[1, 2, hoge(1, 2)]',
+                'expected' => [1, 2, 'hoge(1, 2)']
+            ],
+            '多次元配列' => [
+                'functions' => [
+                    'hoge' => function (array $arguments) {
+                        return 'hoge(' . implode(', ', $arguments) . ')';
+                    },
+                    'fuga' => function (array $arguments) {
+                        return 'fuga(' . implode(', ', $arguments) . ')';
+                    }
+                ],
+                'expression' => '[1, 2, hoge(1, 2), [1, 2, fuga(True)]]',
+                'expected' => [1, 2, 'hoge(1, 2)', [1, 2, 'fuga(1)']]
+            ],
+         ];
     }
 
     public function testReadMe(): void {
