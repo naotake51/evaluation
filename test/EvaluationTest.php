@@ -160,6 +160,24 @@ class EvaluationTest extends TestCase {
                 'expression' => 'hoge(1, 2, 3)',
                 'expected' => new ArgumentError('function hoge arguments not match 2.')
             ],
+            '関数定義複数 パラメーター定義' => [
+                'functions' => [
+                    'hoge' => [
+                        'function' => function ($arguments) {
+                            return 'hoge(' . implode(',', $arguments) . ')';
+                        },
+                        'arguments' => ['integer', 'string', 'string']
+                    ],
+                    'fuga' => [
+                        'function' => function ($arguments) {
+                            return 'fuga(' . implode(',', $arguments) . ')';
+                        },
+                        'arguments' => ['bool']
+                    ]
+                ],
+                'expression' => 'hoge(1, "aaa", fuga(True))',
+                'expected' => 'hoge(1,aaa,fuga(1))'
+            ],
             '引数タイプ' => [
                 'functions' => [],
                 'expression' => '"1" + 2',
@@ -178,6 +196,11 @@ class EvaluationTest extends TestCase {
             'syntax error (( 1 )' => [
                 'functions' => [],
                 'expression' => '(( 1 )',
+                'expected' => new SyntaxError('syntax error.')
+            ],
+            'syntax error (( 1 )))' => [
+                'functions' => [],
+                'expression' => '(( 1 )))',
                 'expected' => new SyntaxError('syntax error.')
             ],
         ];

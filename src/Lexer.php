@@ -83,12 +83,9 @@ class Lexer {
             return [new BooleanNode($tokens[$p]->expression), $p + 1];
         } else if ($this->equal($tokens, $p, 'L_PAREN')) {
             $p++;
-
             [$expr, $p] = $this->expr($tokens, $p);
-
             $this->need($tokens, $p, 'R_PAREN');
             $p++;
-
             return [$expr, $p];
         } else {
             return $this->func($tokens, $p);
