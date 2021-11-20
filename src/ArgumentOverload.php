@@ -72,6 +72,8 @@ class ArgumentOverload {
                 return true;
             } elseif ($type === 'array' && is_array($value)) {
                 return true;
+            } elseif ($type === 'object' && is_object($value)) {
+                return true;
             } elseif ($type === 'null' && is_null($value)) {
                 return true;
             }

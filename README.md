@@ -75,6 +75,7 @@ $result = $evaluation("repeat('abc', 3)"); // => 'abcabcabc'
 |string|is_stringでチェックします。|
 |bool|is_boolでチェックします。|
 |array|is_arrayでチェックします。|
+|object|is_objectでチェックします。|
 |null|is_nullでチェックします。|
 
 ## オーバーロード
