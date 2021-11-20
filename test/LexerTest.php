@@ -12,13 +12,22 @@ use Naotake51\Evaluation\Nodes\MultiplicativeNode;
 
 class LexerTest extends TestCase {
     /**
+     * testInvoke
+     *
+     * @param  Token[] $tokens
+     * @param  Node|\Exception $expected
      * @return void
+     *
      * @dataProvider dataInvoke
      */
-    public function testInvoke(array $tokens, Node $expected): void {
-        $lexer = new Lexer();
-        $root = $lexer($tokens);
-        $this->assertEquals($expected, $root);
+    public function testInvoke(array $tokens, $expected): void {
+        try {
+            $lexer = new Lexer();
+            $root = $lexer($tokens);
+            $this->assertEquals($expected, $root);
+        } catch (\Exception $e) {
+            $this->assertEquals($expected, $e);
+        }
     }
 
     public function dataInvoke(): array {
@@ -109,6 +118,13 @@ class LexerTest extends TestCase {
                     '+'
                 ),
             ],
-        ];
+            'Syntax Error' => [
+                'tokens' => [
+                    new Token('NUMBER', '1'),
+                    new Token('OPERATOR', '+'),
+                ],
+                'expected' => new \Exception('Syntax Error'),
+            ],
+       ];
     }
 }
