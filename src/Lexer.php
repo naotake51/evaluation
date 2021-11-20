@@ -7,12 +7,13 @@ use Naotake51\Evaluation\Nodes\AdditiveNode;
 use Naotake51\Evaluation\Nodes\MultiplicativeNode;
 use Naotake51\Evaluation\Nodes\IntegerNode;
 use Naotake51\Evaluation\Nodes\FloatNode;
+use Naotake51\Evaluation\Nodes\StringNode;
 use Naotake51\Evaluation\Nodes\FunctionNode;
 
 /**
  * expr    = mul ("+" mul | "-" mul)*
  * mul     = primary ("*" primary | "/" primary)*
- * primary = integer | float | "(" expr ")" | func
+ * primary = integer | float | string | "(" expr ")" | func
  * func    = ident "(" (expr ("+" expr)*)? ")"
  *
  */
@@ -56,6 +57,8 @@ class Lexer {
             return [new IntegerNode($tokens[$p]->expression), $p + 1];
         } else if ($this->equal($tokens, $p, 'FLOAT')) {
             return [new FloatNode($tokens[$p]->expression), $p + 1];
+        } else if ($this->equal($tokens, $p, 'STRING')) {
+            return [new StringNode($tokens[$p]->expression), $p + 1];
         } else if ($this->equal($tokens, $p, 'L_PAREN')) {
             $p++;
 
