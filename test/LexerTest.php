@@ -9,6 +9,7 @@ use Naotake51\Evaluation\Nodes\Node;
 use Naotake51\Evaluation\Nodes\IntegerNode;
 use Naotake51\Evaluation\Nodes\FloatNode;
 use Naotake51\Evaluation\Nodes\StringNode;
+use Naotake51\Evaluation\Nodes\BooleanNode;
 use Naotake51\Evaluation\Nodes\AdditiveNode;
 use Naotake51\Evaluation\Nodes\MultiplicativeNode;
 use Naotake51\Evaluation\Nodes\FunctionNode;
@@ -52,6 +53,12 @@ class LexerTest extends TestCase {
                     new Token('STRING', '"aaa"'),
                 ],
                 'expected' => new StringNode('"aaa"')
+            ],
+            'True' => [
+                'tokens' => [
+                    new Token('BOOLEAN', 'True'),
+                ],
+                'expected' => new BooleanNode('True')
             ],
             '加算' => [
                 'tokens' => [
@@ -194,7 +201,7 @@ class LexerTest extends TestCase {
                     new Token('COMMA', ','),
                     new Token('IDENT', 'fuga'),
                     new Token('L_PAREN', '('),
-                    new Token('INTEGER', '1'),
+                    new Token('BOOLEAN', 'TRUE'),
                     new Token('R_PAREN', ')'),
                     new Token('R_PAREN', ')'),
                 ],
@@ -202,7 +209,7 @@ class LexerTest extends TestCase {
                     new IntegerNode('1'),
                     new StringNode('"aaa"'),
                     new FunctionNode('fuga', [
-                        new IntegerNode('1'),
+                        new BooleanNode('TRUE'),
                     ])
                 ])
             ],
