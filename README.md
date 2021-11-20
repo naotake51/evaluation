@@ -12,6 +12,13 @@ $evaluation = new Evaluation([
 ]);
 $result = $evaluation('square(2) + square(2)'); // => 8
 ```
+# リテラル
+|タイプ|例|
+|---|---|
+|整数|123|
+|少数|0.5 .5|
+|論理|True true TRUE False  false FALSE|
+|文字列|"aaa" 'aaa' 'aa\\'aa\\\\aa'|
 
 # マジック関数
 
