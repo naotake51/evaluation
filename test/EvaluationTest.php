@@ -307,16 +307,16 @@ class EvaluationTest extends TestCase {
         $this->assertSame('abcabcabc', $result);
 
         $evaluation = new Evaluation([
-            'hoge' => [
-                'string, numeric' => function (array $arguments) {
-                    return 'hoge(string, numeric)';
+            '__add' => [
+                'string, string' => function (array $arguments) {
+                    return $arguments[0] . $arguments[1];
                 },
-                'string, bool' => function (array $arguments) {
-                    return 'hoge(string, bool)';
+                'numeric, numeric' => function (array $arguments) {
+                    return $arguments[0] + $arguments[1];
                 },
             ]
         ]);
-        $result = $evaluation("hoge('abc', True)"); // => 'hoge(string, bool)'
-        $this->assertSame('hoge(string, bool)', $result);
+        $result = $evaluation("'abc' + 'def'"); // => 'abcdef'
+        $this->assertSame('abcdef', $result);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace Naotake51\Evaluation;
 
-use Naotake51\Evaluation\Arr;
 use Naotake51\Evaluation\Errors\SyntaxError;
 use Naotake51\Evaluation\Errors\UndefineFunctionError;
 use Naotake51\Evaluation\Errors\ArgumentError;
@@ -50,7 +49,7 @@ class Evaluation {
             }
         ];
 
-        $this->functions = Arr::merge($functions, $defaults);
+        $this->functions = $functions + $defaults;
     }
 
     /**
