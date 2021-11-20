@@ -37,12 +37,12 @@ class Lexer {
 
     public function __invoke(array $tokens): ?Node {
         if (count($tokens) === 0) {
-            return null;
+            throw new \Exception('empty tokens.');
         }
 
         [$root, $end] = $this->expr($tokens, 0);
         if (count($tokens) !== $end) {
-            throw new \Exception('Syntax Error');
+            throw new \Exception('syntax error.');
         }
         return $root;
     }
@@ -128,7 +128,7 @@ class Lexer {
 
     private function need(array $tokens, int $p, string $type, $expression = null) {
         if (!$this->equal($tokens, $p, $type, $expression)) {
-            throw new \Exception('Syntax Error');
+            throw new \Exception('syntax error.');
         }
     }
 }

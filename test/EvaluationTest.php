@@ -69,10 +69,10 @@ class EvaluationTest extends TestCase {
                 'expression' => '1 + 2 * (3 - 4)',
                 'expected' => -1,
             ],
-            'Syntax Error' => [
+            'syntax error' => [
                 'functions' => [],
                 'expression' => '1 + ',
-                'expected' => new \Exception('Syntax Error'),
+                'expected' => new \Exception('syntax error.'),
             ],
             '関数' => [
                 'functions' => [
@@ -99,7 +99,7 @@ class EvaluationTest extends TestCase {
                     },
                 ],
                 'expression' => 'hoge(1',
-                'expected' => new \Exception('Syntax Error'),
+                'expected' => new \Exception('syntax error.'),
             ],
             '関数 引数 複数' => [
                 'functions' => [

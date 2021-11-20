@@ -175,12 +175,12 @@ class LexerTest extends TestCase {
                     $callback
                 ),
             ],
-            'Syntax Error' => [
+            'syntax error' => [
                 'tokens' => [
                     new Token('INTEGER', '1'),
                     new Token('OPERATOR', '+'),
                 ],
-                'expected' => new \Exception('Syntax Error'),
+                'expected' => new \Exception('syntax error.'),
             ],
             '関数' => [
                 'tokens' => [
@@ -211,7 +211,7 @@ class LexerTest extends TestCase {
                     new Token('L_PAREN', '('),
                     new Token('INTEGER', '1'),
                 ],
-                'expected' => new \Exception('Syntax Error'),
+                'expected' => new \Exception('syntax error.'),
             ],
             '関数 引数 複数' => [
                 'tokens' => [
