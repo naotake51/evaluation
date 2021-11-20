@@ -2,7 +2,7 @@
 
 namespace Naotake51\Evaluation\Nodes;
 
-class NumberNode implements Node {
+class IntegerNode implements Node {
 
     private string $expression;
 

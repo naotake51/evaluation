@@ -5,8 +5,8 @@ namespace Naotake51\Evaluation;
 class Parser {
     private $parsedTokens = [
         ['/^\s+/', 'WHITE_SPACE'],
-        ['/^[0-9]*\.[0-9]+/', 'NUMBER'],
-        ['/^[0-9]+/', 'NUMBER'],
+        ['/^[0-9]*\.[0-9]+/', 'FLOAT'],
+        ['/^[0-9]+/', 'INTEGER'],
         ['/^true/', 'BOOLEAN'],
         ['/^false/', 'BOOLEAN'],
         ['/^True/', 'BOOLEAN'],

@@ -5,13 +5,14 @@ namespace Naotake51\Evaluation;
 use Naotake51\Evaluation\Nodes\Node;
 use Naotake51\Evaluation\Nodes\AdditiveNode;
 use Naotake51\Evaluation\Nodes\MultiplicativeNode;
-use Naotake51\Evaluation\Nodes\NumberNode;
+use Naotake51\Evaluation\Nodes\IntegerNode;
+use Naotake51\Evaluation\Nodes\FloatNode;
 use Naotake51\Evaluation\Nodes\FunctionNode;
 
 /**
  * expr    = mul ("+" mul | "-" mul)*
  * mul     = primary ("*" primary | "/" primary)*
- * primary = num | "(" expr ")" | func
+ * primary = integer | float | "(" expr ")" | func
  * func    = ident "(" (expr ("+" expr)*)? ")"
  *
  */
@@ -51,8 +52,10 @@ class Lexer {
     }
 
     private function primary(array $tokens, int $p): array {
-        if ($this->equal($tokens, $p, 'NUMBER')) {
-            return [new NumberNode($tokens[$p]->expression), $p + 1];
+        if ($this->equal($tokens, $p, 'INTEGER')) {
+            return [new IntegerNode($tokens[$p]->expression), $p + 1];
+        } else if ($this->equal($tokens, $p, 'FLOAT')) {
+            return [new FloatNode($tokens[$p]->expression), $p + 1];
         } else if ($this->equal($tokens, $p, 'L_PAREN')) {
             $p++;
 
