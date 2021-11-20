@@ -142,4 +142,30 @@ class EvaluationTest extends TestCase {
             ],
         ];
     }
+
+    public function testReadMe(): void {
+        $evaluation = new Evaluation([
+            'square' => function (array $arguments) {
+                return $arguments[0] * $arguments[0];
+            }
+        ]);
+        $result = $evaluation('square(2) + square(2)'); // => 8
+        $this->assertSame(8, $result);
+
+        $evaluation = new Evaluation([
+            '__add' => function (array $arguments) {
+                return "$arguments[0] + $arguments[1]";
+            }
+        ]);
+        $result = $evaluation('1 + 2'); // => '1 + 2'
+        $this->assertSame('1 + 2', $result);
+
+        $evaluation = new Evaluation([
+            '*' => function (string $identify, array $arguments) {
+                return 'call' . $identify . '(' . implode(', ', $arguments). ')';
+            }
+        ]);
+        $result = $evaluation('hoge(1, 2)'); // => 'call hoge(1, 2)'
+        $this->assertSame('call hoge(1, 2)', $result);
+    }
 }
