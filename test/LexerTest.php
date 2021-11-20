@@ -11,6 +11,7 @@ use Naotake51\Evaluation\Nodes\FloatNode;
 use Naotake51\Evaluation\Nodes\StringNode;
 use Naotake51\Evaluation\Nodes\BooleanNode;
 use Naotake51\Evaluation\Nodes\FunctionNode;
+use Naotake51\Evaluation\Errors\SyntaxError;
 
 class LexerTest extends TestCase {
     /**
@@ -161,7 +162,7 @@ class LexerTest extends TestCase {
                     new Token('INTEGER', '1'),
                     new Token('OPERATOR', '+'),
                 ],
-                'expected' => new \Exception('syntax error.'),
+                'expected' => new SyntaxError('syntax error.'),
             ],
             '関数' => [
                 'tokens' => [
@@ -191,7 +192,7 @@ class LexerTest extends TestCase {
                     new Token('L_PAREN', '('),
                     new Token('INTEGER', '1'),
                 ],
-                'expected' => new \Exception('syntax error.'),
+                'expected' => new SyntaxError('syntax error.'),
             ],
             '関数 引数 複数' => [
                 'tokens' => [

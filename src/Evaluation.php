@@ -2,14 +2,20 @@
 
 namespace Naotake51\Evaluation;
 
+use Naotake51\Evaluation\Errors\SyntaxError;
+use Naotake51\Evaluation\Errors\UndefineFunctionError;
+use Naotake51\Evaluation\Errors\ArgumentError;
 use Closure;
 
+/**
+ * 式評価クラス
+ */
 class Evaluation {
     /** @var Closure[] */
     private array $functions;
 
     /**
-     * @param  @var Closure[] $functions
+     * @param  @var (Closure|array)[] $functions
      */
     public function __construct(array $functions) {
         $this->functions = $functions + [
@@ -45,11 +51,20 @@ class Evaluation {
                 'arguments' => ['numeric', 'numeric']
             ],
             '*' => function (string $identify, array $arguments) {
-                throw new \Exception("function $identify is not exists.");
+                throw new UndefineFunctionError("function $identify is not exists.");
             }
         ];
     }
 
+    /**
+     * 式評価
+     *
+     * @param  string $expression
+     * @return mixed
+     * @throws SyntaxError
+     * @throws UndefineFunctionError
+     * @throws ArgumentError
+     */
     public function __invoke(string $expression) {
         $parser = new Parser();
         $tokens = $parser($expression);

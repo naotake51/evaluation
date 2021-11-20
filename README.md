@@ -75,3 +75,12 @@ $result = $evaluation("repeat('abc', 3)"); // => 'abcabcabc'
 |string|is_stringでチェックします。|
 |bool|is_boolでチェックします。|
 |null|is_nullでチェックします。|
+
+# 評価実行エラー
+
+|クラス|説明|
+|---|---|
+|Erros\EvaluationError|評価時に起こるエラーの基底クラス|
+|Erros\SyntaxError|構文エラー|
+|Erros\UndefineFunctionError|未定義関数の呼び出し|
+|Erros\ArgumentError|パラメータチェックでのエラー|

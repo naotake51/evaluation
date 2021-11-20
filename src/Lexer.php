@@ -2,20 +2,22 @@
 
 namespace Naotake51\Evaluation;
 
+use Naotake51\Evaluation\Token;
 use Naotake51\Evaluation\Nodes\Node;
 use Naotake51\Evaluation\Nodes\IntegerNode;
 use Naotake51\Evaluation\Nodes\FloatNode;
 use Naotake51\Evaluation\Nodes\StringNode;
 use Naotake51\Evaluation\Nodes\BooleanNode;
 use Naotake51\Evaluation\Nodes\FunctionNode;
-use Closure;
+use Naotake51\Evaluation\Errors\SyntaxError;
 
 /**
+ * 構文解析モジュール
+ *
  * expr    = mul ("+" mul | "-" mul)*
  * mul     = primary ("*" primary | "/" primary)*
  * primary = integer | float | string | boolean | "(" expr ")" | func
  * func    = ident "(" (expr ("+" expr)*)? ")"
- *
  */
 class Lexer {
     private $exprOperators = [
@@ -29,14 +31,21 @@ class Lexer {
         '%' => '__mod',
     ];
 
-    public function __invoke(array $tokens): ?Node {
+    /**
+     * 構文解析
+     *
+     * @param  Token[] $tokens
+     * @return Node
+     * @throws SyntaxError
+     */
+    public function __invoke(array $tokens): Node {
         if (count($tokens) === 0) {
-            throw new \Exception('empty tokens.');
+            throw new SyntaxError('empty tokens.');
         }
 
         [$root, $end] = $this->expr($tokens, 0);
         if (count($tokens) !== $end) {
-            throw new \Exception('syntax error.');
+            throw new SyntaxError('syntax error.');
         }
         return $root;
     }
@@ -122,7 +131,7 @@ class Lexer {
 
     private function need(array $tokens, int $p, string $type, $expression = null) {
         if (!$this->equal($tokens, $p, $type, $expression)) {
-            throw new \Exception('syntax error.');
+            throw new SyntaxError('syntax error.');
         }
     }
 }

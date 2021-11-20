@@ -2,6 +2,11 @@
 
 namespace Naotake51\Evaluation;
 
+use Naotake51\Evaluation\Errors\SyntaxError;
+
+/**
+ * 字句解析モジュール
+ */
 class Parser {
     private $parsedTokens = [
         ['/^\s+/', 'WHITE_SPACE'],
@@ -27,13 +32,20 @@ class Parser {
         ['/^[A-Za-z][A-Za-z_0-9]*/', 'IDENT'],
     ];
 
-    public function __invoke(string $expression) {
+    /**
+     * 字句解析
+     *
+     * @param  string $expression
+     * @return Token[]
+     * @throws SyntaxError
+     */
+    public function __invoke(string $expression): array {
         $p = 0;
         $tokens = [];
         while ($p < strlen($expression)) {
             $token = $this->matchToken(substr($expression, $p));
             if ($token === null) {
-                return false; // TODO: より具体的なエラー内容を返したい
+                throw new SyntaxError('syntax error.');
             }
             if ($token->type !== 'WHITE_SPACE') {
                 $tokens[] = $token;

@@ -4,6 +4,9 @@ namespace Tests;
 
 use PHPUnit\Framework\TestCase;
 use Naotake51\Evaluation\Evaluation;
+use Naotake51\Evaluation\Errors\SyntaxError;
+use Naotake51\Evaluation\Errors\UndefineFunctionError;
+use Naotake51\Evaluation\Errors\ArgumentError;
 use Closure;
 
 class EvaluationTest extends TestCase {
@@ -72,7 +75,7 @@ class EvaluationTest extends TestCase {
             'syntax error' => [
                 'functions' => [],
                 'expression' => '1 + ',
-                'expected' => new \Exception('syntax error.'),
+                'expected' => new SyntaxError('syntax error.'),
             ],
             '関数' => [
                 'functions' => [
@@ -99,7 +102,7 @@ class EvaluationTest extends TestCase {
                     },
                 ],
                 'expression' => 'hoge(1',
-                'expected' => new \Exception('syntax error.'),
+                'expected' => new SyntaxError('syntax error.'),
             ],
             '関数 引数 複数' => [
                 'functions' => [
@@ -134,7 +137,7 @@ class EvaluationTest extends TestCase {
             '関数定義なし' => [
                 'functions' => [],
                 'expression' => 'hoge(1)',
-                'expected' => new \Exception('function hoge is not exists.')
+                'expected' => new UndefineFunctionError('function hoge is not exists.')
             ],
             'マジックメソッド オーバーライド' => [
                 'functions' => [
@@ -155,7 +158,7 @@ class EvaluationTest extends TestCase {
                     ]
                 ],
                 'expression' => 'hoge(1, 2, 3)',
-                'expected' => new \Exception('function hoge arguments not match 2.')
+                'expected' => new ArgumentError('function hoge arguments not match 2.')
             ],
             '引数タイプ' => [
                 'functions' => [],
@@ -165,17 +168,17 @@ class EvaluationTest extends TestCase {
             '引数タイプエラー' => [
                 'functions' => [],
                 'expression' => '"aaa" + 2',
-                'expected' => new \Exception('function __add argument 1 need numeric type.')
+                'expected' => new ArgumentError('function __add argument 1 need numeric type.')
             ],
             'syntax error (' => [
                 'functions' => [],
                 'expression' => '(',
-                'expected' => new \Exception('syntax error.')
+                'expected' => new SyntaxError('syntax error.')
             ],
             'syntax error (( 1 )' => [
                 'functions' => [],
                 'expression' => '(( 1 )',
-                'expected' => new \Exception('syntax error.')
+                'expected' => new SyntaxError('syntax error.')
             ],
         ];
     }
