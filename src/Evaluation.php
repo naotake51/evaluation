@@ -64,7 +64,7 @@ class Evaluation {
             } else if (array_key_exists('*', $functions)) {
                 return $functions['*']($identify, $arguments);
             } else {
-                throw new \Exception("function $identify is not exists");
+                throw new \Exception("function $identify is not exists.");
             }
         };
         $lexer = new Lexer($callback);

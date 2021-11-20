@@ -131,6 +131,11 @@ class EvaluationTest extends TestCase {
                 'expression' => 'aaa(1, 2, 3)',
                 'expected' => 'aaa(1,2,3)'
             ],
+            '関数定義なし' => [
+                'functions' => [],
+                'expression' => 'hoge(1)',
+                'expected' => new \Exception('function hoge is not exists.')
+            ],
             'マジックメソッド オーバーライド' => [
                 'functions' => [
                     '__add' => function ($arguments) {
