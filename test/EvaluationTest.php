@@ -16,12 +16,20 @@ class EvaluationTest extends TestCase {
      * @dataProvider dataInvoke
      */
     public function testInvoke(string $expression, $expected): void {
-        $callback = function ($identify, $arguments) {
-            return $identify . '(' . implode(',', $arguments) . ')';
-        };
+        $functions = [
+            'hoge' => function ($arguments) {
+                return 'hoge(' . implode(',', $arguments) . ')';
+            },
+            'fuga' => function ($arguments) {
+                return 'fuga(' . implode(',', $arguments) . ')';
+            },
+            '*' => function ($identify, $arguments) {
+                return $identify . '(' . implode(',', $arguments) . ')';
+            }
+        ];
 
         try {
-            $evaluation = new Evaluation($callback);
+            $evaluation = new Evaluation($functions);
             $result = $evaluation($expression);
             $this->assertSame($expected, $result);
         } catch (\Exception $e) {
@@ -86,6 +94,10 @@ class EvaluationTest extends TestCase {
             '関数 引数が関数' => [
                 'expression' => 'hoge(1, "aaa", fuga(True))',
                 'expected' => 'hoge(1,aaa,fuga(1))'
+            ],
+            '未定義関数' => [
+                'expression' => 'aaa(1, 2, 3)',
+                'expected' => 'aaa(1,2,3)'
             ],
         ];
     }

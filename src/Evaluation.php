@@ -5,17 +5,31 @@ namespace Naotake51\Evaluation;
 use Closure;
 
 class Evaluation {
-    private Closure $callback;
+    /** @var Closure[] */
+    private array $functions;
 
-    public function __construct(Closure $callback) {
-        $this->callback = $callback;
+    /**
+     * @param  @var Closure[] $functions
+     */
+    public function __construct(array $functions) {
+        $this->functions = $functions;
     }
 
     public function __invoke(string $expression) {
         $parser = new Parser();
         $tokens = $parser($expression);
 
-        $lexer = new Lexer($this->callback);
+        $functions = $this->functions;
+        $callback = function ($identify, $arguments) use ($functions) {
+            if (array_key_exists($identify, $functions)) {
+                return $functions[$identify]($arguments);
+            } else if (array_key_exists('*', $functions)) {
+                return $functions['*']($identify, $arguments);
+            } else {
+                throw new \Exception("$identify is not exists function.");
+            }
+        };
+        $lexer = new Lexer($callback);
         $root = $lexer($tokens);
 
         if ($root === null) {
