@@ -162,7 +162,7 @@ class EvaluationTest extends TestCase {
 
         $evaluation = new Evaluation([
             '*' => function (string $identify, array $arguments) {
-                return 'call' . $identify . '(' . implode(', ', $arguments). ')';
+                return 'call ' . $identify . '(' . implode(', ', $arguments). ')';
             }
         ]);
         $result = $evaluation('hoge(1, 2)'); // => 'call hoge(1, 2)'
