@@ -167,6 +167,16 @@ class EvaluationTest extends TestCase {
                 'expression' => '"aaa" + 2',
                 'expected' => new \Exception('function __add argument 1 need numeric type.')
             ],
+            'syntax error (' => [
+                'functions' => [],
+                'expression' => '(',
+                'expected' => new \Exception('syntax error.')
+            ],
+            'syntax error (( 1 )' => [
+                'functions' => [],
+                'expression' => '(( 1 )',
+                'expected' => new \Exception('syntax error.')
+            ],
         ];
     }
 
