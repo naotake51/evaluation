@@ -5,6 +5,7 @@ namespace Tests;
 use PHPUnit\Framework\TestCase;
 use Naotake51\Evaluation\Parser;
 use Naotake51\Evaluation\Token;
+use Naotake51\Evaluation\Errors\SyntaxError;
 
 class ParserTest extends TestCase {
     /**
@@ -12,10 +13,14 @@ class ParserTest extends TestCase {
      * @dataProvider dataInvoke
      */
     public function testInvoke(string $expression, $expected): void {
-        $parser = new Parser();
-        $tokens = $parser($expression);
-        $this->assertEquals($expected, $tokens);
-    }
+        try {
+            $parser = new Parser();
+            $tokens = $parser($expression);
+            $this->assertEquals($expected, $tokens);
+        } catch (\Exception $e) {
+            $this->assertEquals($expected, $e);
+        }
+}
 
     public function dataInvoke(): array {
         return [
@@ -83,7 +88,7 @@ class ParserTest extends TestCase {
             ],
             '文字列 エラー' => [
                 'expression' => '"abcdef"aaa" + \'xyz\'',
-                'expected' => false
+                'expected' => new SyntaxError('syntax error.')
             ],
             '関数' => [
                 'expression' => 'xxx(aaa, "bbb", yyy(1, "2"))',
@@ -103,6 +108,6 @@ class ParserTest extends TestCase {
                     new Token('R_PAREN', ')'),
                 ]
             ],
-        ];
+       ];
     }
 }
