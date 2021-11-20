@@ -11,6 +11,7 @@ class StringNode implements Node {
     }
 
     public function eval() {
-        return mb_substr($this->expression, 1, strlen($this->expression) - 2); // TODO エスケープ文字を考慮していない。
+        $inner = mb_substr($this->expression, 1, strlen($this->expression) - 2); // 端のクォート文字を除外
+        return preg_replace('/\\\\(.)/', '${1}', $inner); // エスケープ文字を除外
     }
 }

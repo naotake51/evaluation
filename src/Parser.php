@@ -13,8 +13,8 @@ class Parser {
         ['/^False/', 'BOOLEAN'],
         ['/^TRUE/', 'BOOLEAN'],
         ['/^FALSE/', 'BOOLEAN'],
-        ["/^'.*?'/", 'STRING'], // TODO: エスケープ考慮なし
-        ['/^".*?"/', 'STRING'], // TODO: エスケープ考慮なし
+        ["/^'.*?(?<!\\\\)'/", 'STRING'], // 肯定の後読み
+        ['/^".*?(?<!\\\\)"/', 'STRING'], // 肯定の後読み
         ['/^\+/', 'OPERATOR'],
         ['/^\-/', 'OPERATOR'],
         ['/^\*/', 'OPERATOR'],
