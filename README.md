@@ -59,10 +59,9 @@ arrayを渡す事で引数の型を定義することができます。
 ```
 $evaluation = new Evaluation([
     'repeat' => [
-        'function' => function (array $arguments) {
-            return str_repeat($arguments[0], $arguments[1]);
+        'string, integer|null' => function (array $arguments) {
+            return str_repeat($arguments[0], $arguments[1] ?? 2);
         },
-        'arguments' => ['string', 'numeric']
     ]
 ]);
 $result = $evaluation("repeat('abc', 3)"); // => 'abcabcabc'
@@ -77,6 +76,24 @@ $result = $evaluation("repeat('abc', 3)"); // => 'abcabcabc'
 |bool|is_boolでチェックします。|
 |array|is_arrayでチェックします。|
 |null|is_nullでチェックします。|
+
+## オーバーロード
+
+複数のパターンを登録することでオーバーロードできます。
+
+```
+$evaluation = new Evaluation([
+    'hoge' => [
+        'string, numeric' => function (array $arguments) {
+            return 'hoge(string, numeric)';
+        },
+        'string, bool' => function (array $arguments) {
+            return 'hoge(string, bool)';
+        },
+    ]
+]);
+$result = $evaluation("hoge('abc', True)"); // => 'hoge(string, bool)'
+```
 
 ## 評価実行時エラー
 

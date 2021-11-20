@@ -151,28 +151,25 @@ class EvaluationTest extends TestCase {
             '引数の数が違う' => [
                 'functions' => [
                     'hoge' => [
-                        'function' => function (array $arguments) {
+                        'numeric, numeric' => function (array $arguments) {
                             return $arguments;
-                        },
-                        'arguments' => ['numeric', 'numeric']
+                        }
                     ]
                 ],
                 'expression' => 'hoge(1, 2, 3)',
-                'expected' => new ArgumentError('function hoge arguments not match 2.')
+                'expected' => new ArgumentError('function hoge arguments is not match (numeric, numeric).')
             ],
             '関数定義複数 パラメーター定義' => [
                 'functions' => [
                     'hoge' => [
-                        'function' => function (array $arguments) {
+                        'integer, string, string' => function (array $arguments) {
                             return 'hoge(' . implode(',', $arguments) . ')';
-                        },
-                        'arguments' => ['integer', 'string', 'string']
+                        }
                     ],
                     'fuga' => [
-                        'function' => function (array $arguments) {
+                        'bool' => function (array $arguments) {
                             return 'fuga(' . implode(',', $arguments) . ')';
                         },
-                        'arguments' => ['bool']
                     ]
                 ],
                 'expression' => 'hoge(1, "aaa", fuga(True))',
@@ -186,7 +183,49 @@ class EvaluationTest extends TestCase {
             '引数タイプエラー' => [
                 'functions' => [],
                 'expression' => '"aaa" + 2',
-                'expected' => new ArgumentError('function __add argument 1 need numeric type.')
+                'expected' => new ArgumentError('function __add arguments is not match (numeric, numeric).')
+            ],
+            'パラメーター　オーバーロード' => [
+                'functions' => [
+                    'hoge' => [
+                        'numeric, numeric' => function (array $arguments) {
+                            return 'hoge(numeric, numeric)';
+                        },
+                        'numeric, string' => function (array $arguments) {
+                            return 'hoge(numeric, string)';
+                        },
+                    ]
+                ],
+                'expression' => 'hoge(1, 1)',
+                'expected' => 'hoge(numeric, numeric)'
+            ],
+            'パラメーター　オーバーロード 2' => [
+                'functions' => [
+                    'hoge' => [
+                        'numeric, numeric' => function (array $arguments) {
+                            return 'hoge(numeric, numeric)';
+                        },
+                        'numeric, string' => function (array $arguments) {
+                            return 'hoge(numeric, string)';
+                        },
+                    ]
+                ],
+                'expression' => 'hoge(1, "aaa")',
+                'expected' => 'hoge(numeric, string)'
+            ],
+            'パラメーター　オーバーロード 3' => [
+                'functions' => [
+                    'hoge' => [
+                        'numeric, numeric' => function (array $arguments) {
+                            return 'hoge(numeric, numeric)';
+                        },
+                        'numeric, string' => function (array $arguments) {
+                            return 'hoge(numeric, string)';
+                        },
+                    ]
+                ],
+                'expression' => 'hoge(1, True)',
+                'expected' => new ArgumentError('function hoge arguments is not match (numeric, numeric) or (numeric, string).')
             ],
             'syntax error (' => [
                 'functions' => [],
@@ -259,13 +298,25 @@ class EvaluationTest extends TestCase {
 
         $evaluation = new Evaluation([
             'repeat' => [
-                'function' => function (array $arguments) {
-                    return str_repeat($arguments[0], $arguments[1]);
+                'string, integer|null' => function (array $arguments) {
+                    return str_repeat($arguments[0], $arguments[1] ?? 2);
                 },
-                'arguments' => ['string', 'numeric']
             ]
         ]);
         $result = $evaluation("repeat('abc', 3)"); // => 'abcabcabc'
         $this->assertSame('abcabcabc', $result);
+
+        $evaluation = new Evaluation([
+            'hoge' => [
+                'string, numeric' => function (array $arguments) {
+                    return 'hoge(string, numeric)';
+                },
+                'string, bool' => function (array $arguments) {
+                    return 'hoge(string, bool)';
+                },
+            ]
+        ]);
+        $result = $evaluation("hoge('abc', True)"); // => 'hoge(string, bool)'
+        $this->assertSame('hoge(string, bool)', $result);
     }
 }
