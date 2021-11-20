@@ -2,6 +2,7 @@
 
 namespace Naotake51\Evaluation;
 
+use Naotake51\Evaluation\Arr;
 use Naotake51\Evaluation\Errors\SyntaxError;
 use Naotake51\Evaluation\Errors\UndefineFunctionError;
 use Naotake51\Evaluation\Errors\ArgumentError;
@@ -18,8 +19,7 @@ class Evaluation {
      * @param  @var (Closure|array)[] $functions
      */
     public function __construct(array $functions) {
-        $this->functions = $functions + [
-            // default functions
+        $defaults = [
             '__add' => [
                 'numeric, numeric' => function (array $arguments) {
                     return $arguments[0] + $arguments[1];
@@ -49,6 +49,8 @@ class Evaluation {
                 throw new UndefineFunctionError("function $identify is not exists.");
             }
         ];
+
+        $this->functions = Arr::merge($functions, $defaults);
     }
 
     /**
