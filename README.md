@@ -12,7 +12,7 @@ $evaluation = new Evaluation([
 ]);
 $result = $evaluation('square(2) + square(2)'); // => 8
 ```
-# リテラル
+## リテラル
 |タイプ|例|
 |---|---|
 |整数|123|
@@ -20,7 +20,7 @@ $result = $evaluation('square(2) + square(2)'); // => 8
 |論理|True true TRUE False  false FALSE|
 |文字列|"aaa" 'aaa' 'aa\\'aa\\\\aa'|
 
-# マジック関数
+## マジック関数
 
 |識別子|説明|
 |---|---|
@@ -50,7 +50,7 @@ $evaluation = new Evaluation([
 $result = $evaluation('hoge(1, 2)'); // => 'call hoge(1, 2)'
 ```
 
-# 引数型チェック
+## パラメーターチェック
 
 arrayを渡す事で引数の型を定義することができます。
 '|'で区切ることでORを表現することも可能です。
@@ -76,7 +76,7 @@ $result = $evaluation("repeat('abc', 3)"); // => 'abcabcabc'
 |bool|is_boolでチェックします。|
 |null|is_nullでチェックします。|
 
-# 評価実行エラー
+## 評価実行時エラー
 
 |クラス|説明|
 |---|---|
