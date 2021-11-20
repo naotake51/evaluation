@@ -12,7 +12,24 @@ class Evaluation {
      * @param  @var Closure[] $functions
      */
     public function __construct(array $functions) {
-        $this->functions = $functions;
+        $this->functions = $functions + [
+            // default functions
+            '__add' => function ($arguments) {
+                return $arguments[0] + $arguments[1];
+            },
+            '__sub' => function ($arguments) {
+                return $arguments[0] - $arguments[1];
+            },
+            '__mul' => function ($arguments) {
+                return $arguments[0] * $arguments[1];
+            },
+            '__div' => function ($arguments) {
+                return $arguments[0] / $arguments[1];
+            },
+            '__mod' => function ($arguments) {
+                return $arguments[0] % $arguments[1];
+            },
+        ];
     }
 
     public function __invoke(string $expression) {

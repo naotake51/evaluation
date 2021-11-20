@@ -10,10 +10,7 @@ use Naotake51\Evaluation\Nodes\IntegerNode;
 use Naotake51\Evaluation\Nodes\FloatNode;
 use Naotake51\Evaluation\Nodes\StringNode;
 use Naotake51\Evaluation\Nodes\BooleanNode;
-use Naotake51\Evaluation\Nodes\AdditiveNode;
-use Naotake51\Evaluation\Nodes\MultiplicativeNode;
 use Naotake51\Evaluation\Nodes\FunctionNode;
-use Closure;
 
 class LexerTest extends TestCase {
     /**
@@ -77,10 +74,13 @@ class LexerTest extends TestCase {
                     new Token('OPERATOR', '+'),
                     new Token('INTEGER', '1'),
                 ],
-                'expected' => new AdditiveNode(
-                    new IntegerNode('1'),
-                    new IntegerNode('1'),
-                    '+'
+                'expected' => new FunctionNode(
+                    '__add',
+                    [
+                        new IntegerNode('1'),
+                        new IntegerNode('1'),
+                    ],
+                    $callback
                 ),
             ],
             '加算減算 複合' => [
@@ -91,14 +91,20 @@ class LexerTest extends TestCase {
                     new Token('OPERATOR', '-'),
                     new Token('INTEGER', '3'),
                 ],
-                'expected' => new AdditiveNode(
-                    new AdditiveNode(
-                        new IntegerNode('1'),
-                        new IntegerNode('2'),
-                        '+'
-                    ),
-                    new IntegerNode('3'),
-                    '-'
+                'expected' => new FunctionNode(
+                    '__sub',
+                    [
+                        new FunctionNode(
+                            '__add',
+                            [
+                                new IntegerNode('1'),
+                                new IntegerNode('2'),
+                            ],
+                            $callback
+                        ),
+                        new IntegerNode('3'),
+                    ],
+                    $callback
                 ),
             ],
             '四則演算 複合' => [
@@ -111,18 +117,27 @@ class LexerTest extends TestCase {
                     new Token('OPERATOR', '-'),
                     new Token('INTEGER', '4'),
                 ],
-                'expected' => new AdditiveNode(
-                    new AdditiveNode(
-                        new IntegerNode('1'),
-                        new MultiplicativeNode(
-                            new IntegerNode('2'),
-                            new IntegerNode('3'),
-                            '*'
+                'expected' => new FunctionNode(
+                    '__sub',
+                    [
+                        new FunctionNode(
+                            '__add',
+                            [
+                                new IntegerNode('1'),
+                                new FunctionNode(
+                                    '__mul',
+                                    [
+                                        new IntegerNode('2'),
+                                        new IntegerNode('3'),
+                                    ],
+                                    $callback
+                                ),
+                            ],
+                            $callback
                         ),
-                        '+'
-                    ),
-                    new IntegerNode('4'),
-                    '-'
+                        new IntegerNode('4'),
+                    ],
+                    $callback
                 ),
             ],
             'かっこ' => [
@@ -137,18 +152,27 @@ class LexerTest extends TestCase {
                     new Token('INTEGER', '4'),
                     new Token('R_PAREN', ')'),
                 ],
-                'expected' => new AdditiveNode(
-                    new IntegerNode('1'),
-                    new MultiplicativeNode(
-                        new IntegerNode('2'),
-                        new AdditiveNode(
-                            new IntegerNode('3'),
-                            new IntegerNode('4'),
-                            '-'
+                'expected' => new FunctionNode(
+                    '__add',
+                    [
+                        new IntegerNode('1'),
+                        new FunctionNode(
+                            '__mul',
+                            [
+                                new IntegerNode('2'),
+                                new FunctionNode(
+                                    '__sub',
+                                    [
+                                        new IntegerNode('3'),
+                                        new IntegerNode('4'),
+                                    ],
+                                    $callback
+                                ),
+                            ],
+                            $callback
                         ),
-                        '*'
-                    ),
-                    '+'
+                    ],
+                    $callback
                 ),
             ],
             'Syntax Error' => [
@@ -258,28 +282,34 @@ class LexerTest extends TestCase {
                     new Token('R_PAREN', ')'),
                     new Token('R_PAREN', ')'),
                 ],
-                'expected' => new AdditiveNode(
-                    new IntegerNode('1'),
-                    new FunctionNode(
-                        'hoge',
-                        [
-                            new AdditiveNode(
-                                new IntegerNode('1'),
+                'expected' => new FunctionNode(
+                    '__add',
+                    [
+                        new IntegerNode('1'),
+                        new FunctionNode(
+                            'hoge',
+                            [
+                                new FunctionNode(
+                                    '__add',
+                                    [
+                                        new IntegerNode('1'),
+                                        new IntegerNode('2'),
+                                    ],
+                                    $callback
+                                ),
                                 new IntegerNode('2'),
-                                '+'
-                            ),
-                            new IntegerNode('2'),
-                            new FunctionNode(
-                                'fuga',
-                                [
-                                    new IntegerNode('1'),
-                                ],
-                                $callback
-                            ),
-                        ],
-                        $callback
-                    ),
-                    '+'
+                                new FunctionNode(
+                                    'fuga',
+                                    [
+                                        new IntegerNode('1'),
+                                    ],
+                                    $callback
+                                ),
+                            ],
+                            $callback
+                        ),
+                    ],
+                    $callback
                 )
             ],
       ];

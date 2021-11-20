@@ -22,6 +22,17 @@ use Closure;
 class Lexer {
     private Closure $callback;
 
+    private $exprOperators = [
+        '+' => '__add',
+        '-' => '__sub',
+    ];
+
+    private $mulOperators = [
+        '*' => '__mul',
+        '/' => '__div',
+        '%' => '__mod',
+    ];
+
     public function __construct(Closure $callback) {
         $this->callback = $callback;
     }
@@ -40,22 +51,22 @@ class Lexer {
 
     private function expr(array $tokens, int $p): array {
         [$left, $p] = $this->mul($tokens, $p);
-        while ($this->equal($tokens, $p, 'OPERATOR', ['+', '-'])) {
-            $operator = $tokens[$p]->expression;
+        while ($this->equal($tokens, $p, 'OPERATOR', array_keys($this->exprOperators))) {
+            $magicFunction = $this->exprOperators[$tokens[$p]->expression];
             $p++;
             [$right, $p] = $this->mul($tokens, $p);
-            $left = new AdditiveNode($left, $right, $operator);
+            $left = new FunctionNode($magicFunction, [$left, $right], $this->callback);
         }
         return [$left, $p];
     }
 
     private function mul(array $tokens, int $p): array {
         [$left, $p] = $this->primary($tokens, $p);
-        while ($this->equal($tokens, $p, 'OPERATOR', ['*', '/', '%'])) {
-            $operator = $tokens[$p]->expression;
+        while ($this->equal($tokens, $p, 'OPERATOR', array_keys($this->mulOperators))) {
+            $magicFunction = $this->mulOperators[$tokens[$p]->expression];
             $p++;
             [$right, $p] = $this->primary($tokens, $p);
-            $left = new MultiplicativeNode($left, $right, $operator);
+            $left = new FunctionNode($magicFunction, [$left, $right], $this->callback);
         }
         return [$left, $p];
     }
