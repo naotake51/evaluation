@@ -2,6 +2,8 @@
 
 namespace Naotake51\Evaluation\Nodes;
 
+use Closure;
+
 class FloatNode implements Node {
 
     private string $expression;
@@ -10,7 +12,7 @@ class FloatNode implements Node {
         $this->expression = $expression;
     }
 
-    public function eval() {
+    public function eval(Closure $callback) {
         return (float)$this->expression;
     }
 }

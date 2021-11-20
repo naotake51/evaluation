@@ -18,8 +18,6 @@ use Closure;
  *
  */
 class Lexer {
-    private Closure $callback;
-
     private $exprOperators = [
         '+' => '__add',
         '-' => '__sub',
@@ -30,10 +28,6 @@ class Lexer {
         '/' => '__div',
         '%' => '__mod',
     ];
-
-    public function __construct(Closure $callback) {
-        $this->callback = $callback;
-    }
 
     public function __invoke(array $tokens): ?Node {
         if (count($tokens) === 0) {
@@ -53,7 +47,7 @@ class Lexer {
             $magicFunction = $this->exprOperators[$tokens[$p]->expression];
             $p++;
             [$right, $p] = $this->mul($tokens, $p);
-            $left = new FunctionNode($magicFunction, [$left, $right], $this->callback);
+            $left = new FunctionNode($magicFunction, [$left, $right]);
         }
         return [$left, $p];
     }
@@ -64,7 +58,7 @@ class Lexer {
             $magicFunction = $this->mulOperators[$tokens[$p]->expression];
             $p++;
             [$right, $p] = $this->primary($tokens, $p);
-            $left = new FunctionNode($magicFunction, [$left, $right], $this->callback);
+            $left = new FunctionNode($magicFunction, [$left, $right]);
         }
         return [$left, $p];
     }
@@ -109,7 +103,7 @@ class Lexer {
             $this->need($tokens, $p, 'R_PAREN');
         }
         $p++;
-        return [new FunctionNode($identify, $arguments, $this->callback), $p];
+        return [new FunctionNode($identify, $arguments), $p];
     }
 
     private function equal(array $tokens, int $p, string $type, $expression = null): bool {

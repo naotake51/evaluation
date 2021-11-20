@@ -57,23 +57,24 @@ class Evaluation {
             return null;
         }
 
-        $functions = $this->functions;
-        $argumentValidator = new ArgumentValidator();
-        $callback = function ($identify, $arguments) use ($functions, $argumentValidator) {
-            if (array_key_exists($identify, $functions)) {
-                $function = $functions[$identify];
-                if (is_array($function)) {
-                    $argumentValidator($identify, $arguments, $function['arguments']);
-                    $function = $function['function'];
-                }
-                return $function($arguments);
-            } else {
-                return $functions['*']($identify, $arguments);
-            }
-        };
-        $lexer = new Lexer($callback);
+        $lexer = new Lexer();
         $rootNode = $lexer($tokens);
 
-        return $rootNode->eval();
+        $functions = $this->functions;
+        $argumentValidator = new ArgumentValidator();
+        return $rootNode->eval(
+            function ($identify, $arguments) use ($functions, $argumentValidator) {
+                if (array_key_exists($identify, $functions)) {
+                    $function = $functions[$identify];
+                    if (is_array($function)) {
+                        $argumentValidator($identify, $arguments, $function['arguments']);
+                        $function = $function['function'];
+                    }
+                    return $function($arguments);
+                } else {
+                    return $functions['*']($identify, $arguments);
+                }
+            }
+        );
     }
 }

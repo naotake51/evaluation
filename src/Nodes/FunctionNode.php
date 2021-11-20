@@ -7,21 +7,17 @@ class FunctionNode implements Node {
 
     private string $identify;
     private array $arguments;
-    private Closure $callback;
 
-    public function __construct(string $identify, array $arguments, Closure $callback) {
+    public function __construct(string $identify, array $arguments) {
         $this->identify = $identify;
         $this->arguments = $arguments;
-        $this->callback = $callback;
     }
 
-    public function eval() {
-        $callback = $this->callback;
-
+    public function eval(Closure $callback) {
         return $callback(
             $this->identify,
-            array_map(function (Node $argument) {
-                return $argument->eval();
+            array_map(function (Node $argument) use ($callback) {
+                return $argument->eval($callback);
             }, $this->arguments)
         );
     }

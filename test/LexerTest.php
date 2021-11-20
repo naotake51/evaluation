@@ -23,13 +23,8 @@ class LexerTest extends TestCase {
      * @dataProvider dataInvoke
      */
     public function testInvoke(array $tokens, $expected): void {
-        // dummy
-        $callback = function (string $identify, array $arguments) {
-            return null;
-        };
-
         try {
-            $lexer = new Lexer($callback);
+            $lexer = new Lexer();
             $root = $lexer($tokens);
             $this->assertEquals($expected, $root);
         } catch (\Exception $e) {
@@ -38,11 +33,6 @@ class LexerTest extends TestCase {
     }
 
     public function dataInvoke(): array {
-        // dummy
-        $callback = function (string $identify, array $arguments) {
-            return null;
-        };
-
         return [
             '整数' => [
                 'tokens' => [
@@ -79,8 +69,7 @@ class LexerTest extends TestCase {
                     [
                         new IntegerNode('1'),
                         new IntegerNode('1'),
-                    ],
-                    $callback
+                    ]
                 ),
             ],
             '加算減算 複合' => [
@@ -100,11 +89,9 @@ class LexerTest extends TestCase {
                                 new IntegerNode('1'),
                                 new IntegerNode('2'),
                             ],
-                            $callback
                         ),
                         new IntegerNode('3'),
-                    ],
-                    $callback
+                    ]
                 ),
             ],
             '四則演算 複合' => [
@@ -130,14 +117,11 @@ class LexerTest extends TestCase {
                                         new IntegerNode('2'),
                                         new IntegerNode('3'),
                                     ],
-                                    $callback
                                 ),
-                            ],
-                            $callback
+                            ]
                         ),
                         new IntegerNode('4'),
-                    ],
-                    $callback
+                    ]
                 ),
             ],
             'かっこ' => [
@@ -165,14 +149,11 @@ class LexerTest extends TestCase {
                                     [
                                         new IntegerNode('3'),
                                         new IntegerNode('4'),
-                                    ],
-                                    $callback
+                                    ]
                                 ),
-                            ],
-                            $callback
+                            ]
                         ),
-                    ],
-                    $callback
+                    ]
                 ),
             ],
             'syntax error' => [
@@ -188,7 +169,7 @@ class LexerTest extends TestCase {
                     new Token('L_PAREN', '('),
                     new Token('R_PAREN', ')'),
                 ],
-                'expected' => new FunctionNode('hoge', [], $callback)
+                'expected' => new FunctionNode('hoge', [])
             ],
             '関数 引数' => [
                 'tokens' => [
@@ -201,8 +182,7 @@ class LexerTest extends TestCase {
                     'hoge',
                     [
                         new IntegerNode('1')
-                    ],
-                    $callback
+                    ]
                 )
             ],
             '関数 閉じ括弧なし' => [
@@ -230,8 +210,7 @@ class LexerTest extends TestCase {
                         new IntegerNode('1'),
                         new IntegerNode('2'),
                         new IntegerNode('3'),
-                    ],
-                    $callback
+                    ]
                 )
             ],
             '関数 引数が関数' => [
@@ -257,11 +236,9 @@ class LexerTest extends TestCase {
                             'fuga',
                             [
                                 new BooleanNode('TRUE'),
-                            ],
-                            $callback
+                            ]
                         )
-                    ],
-                    $callback
+                    ]
                 )
             ],
             '四則演算 + 関数' => [
@@ -294,22 +271,18 @@ class LexerTest extends TestCase {
                                     [
                                         new IntegerNode('1'),
                                         new IntegerNode('2'),
-                                    ],
-                                    $callback
+                                    ]
                                 ),
                                 new IntegerNode('2'),
                                 new FunctionNode(
                                     'fuga',
                                     [
                                         new IntegerNode('1'),
-                                    ],
-                                    $callback
+                                    ]
                                 ),
-                            ],
-                            $callback
+                            ]
                         ),
-                    ],
-                    $callback
+                    ]
                 )
             ],
       ];
