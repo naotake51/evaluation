@@ -72,8 +72,8 @@ arrayを渡す事で引数の型を定義することができます。
 ```php
 $evaluation = new Evaluation([
     'repeat' => [
-        'string, integer|null' => function (array $arguments) {
-            return str_repeat($arguments[0], $arguments[1] ?? 2);
+        'string, integer|null' => function (string $str, ?int $repeat) {
+            return str_repeat($str, $repeat ?? 2);
         },
     ]
 ]);
@@ -87,11 +87,11 @@ $result = $evaluation("repeat('abc', 3)"); // => 'abcabcabc'
 ```php
 $evaluation = new Evaluation([
     '__add' => [
-        'string, string' => function (array $arguments) {
-            return $arguments[0] . $arguments[1];
+        'string, string' => function (string $a, string $b) {
+            return $a . $b;
         },
-        'numeric, numeric' => function (array $arguments) {
-            return $arguments[0] + $arguments[1];
+        'numeric, numeric' => function ($a, $b) {
+            return $a + $b;
         },
     ]
 ]);

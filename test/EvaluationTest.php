@@ -163,12 +163,12 @@ class EvaluationTest extends TestCase {
             '関数定義複数 パラメーター定義' => [
                 'functions' => [
                     'hoge' => [
-                        'integer, string, string' => function (array $arguments) {
+                        'integer, string, string' => function (...$arguments) {
                             return 'hoge(' . implode(',', $arguments) . ')';
                         }
                     ],
                     'fuga' => [
-                        'bool' => function (array $arguments) {
+                        'bool' => function (...$arguments) {
                             return 'fuga(' . implode(',', $arguments) . ')';
                         },
                     ]
@@ -189,10 +189,10 @@ class EvaluationTest extends TestCase {
             'パラメーター　オーバーロード' => [
                 'functions' => [
                     'hoge' => [
-                        'numeric, numeric' => function (array $arguments) {
+                        'numeric, numeric' => function (...$arguments) {
                             return 'hoge(numeric, numeric)';
                         },
-                        'numeric, string' => function (array $arguments) {
+                        'numeric, string' => function (...$arguments) {
                             return 'hoge(numeric, string)';
                         },
                     ]
@@ -203,10 +203,10 @@ class EvaluationTest extends TestCase {
             'パラメーター　オーバーロード 2' => [
                 'functions' => [
                     'hoge' => [
-                        'numeric, numeric' => function (array $arguments) {
+                        'numeric, numeric' => function (...$arguments) {
                             return 'hoge(numeric, numeric)';
                         },
-                        'numeric, string' => function (array $arguments) {
+                        'numeric, string' => function (...$arguments) {
                             return 'hoge(numeric, string)';
                         },
                     ]
@@ -217,10 +217,10 @@ class EvaluationTest extends TestCase {
             'パラメーター　オーバーロード 3' => [
                 'functions' => [
                     'hoge' => [
-                        'numeric, numeric' => function (array $arguments) {
+                        'numeric, numeric' => function (...$arguments) {
                             return 'hoge(numeric, numeric)';
                         },
-                        'numeric, string' => function (array $arguments) {
+                        'numeric, string' => function (...$arguments) {
                             return 'hoge(numeric, string)';
                         },
                     ]
@@ -299,8 +299,8 @@ class EvaluationTest extends TestCase {
 
         $evaluation = new Evaluation([
             'repeat' => [
-                'string, integer|null' => function (array $arguments) {
-                    return str_repeat($arguments[0], $arguments[1] ?? 2);
+                'string, integer|null' => function (string $str, ?int $repeat) {
+                    return str_repeat($str, $repeat ?? 2);
                 },
             ]
         ]);
@@ -309,11 +309,11 @@ class EvaluationTest extends TestCase {
 
         $evaluation = new Evaluation([
             '__add' => [
-                'string, string' => function (array $arguments) {
-                    return $arguments[0] . $arguments[1];
+                'string, string' => function (string $a, string $b) {
+                    return $a . $b;
                 },
-                'numeric, numeric' => function (array $arguments) {
-                    return $arguments[0] + $arguments[1];
+                'numeric, numeric' => function ($a, $b) {
+                    return $a + $b;
                 },
             ]
         ]);

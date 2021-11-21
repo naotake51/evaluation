@@ -20,28 +20,28 @@ class Evaluation {
     public function __construct(array $functions) {
         $defaults = [
             '__add' => [
-                'numeric, numeric' => function (array $arguments) {
-                    return $arguments[0] + $arguments[1];
+                'numeric, numeric' => function ($a, $b) {
+                    return $a + $b;
                 }
             ],
             '__sub' => [
-                'numeric, numeric' => function (array $arguments) {
-                    return $arguments[0] - $arguments[1];
+                'numeric, numeric' => function ($a, $b) {
+                    return $a - $b;
                 },
             ],
             '__mul' => [
-                'numeric, numeric' => function (array $arguments) {
-                    return $arguments[0] * $arguments[1];
+                'numeric, numeric' => function ($a, $b) {
+                    return $a * $b;
                 },
             ],
             '__div' => [
-                'numeric, numeric' => function (array $arguments) {
-                    return $arguments[0] / $arguments[1];
+                'numeric, numeric' => function ($a, $b) {
+                    return $a / $b;
                 },
             ],
             '__mod' => [
-                'numeric, numeric' => function (array $arguments) {
-                    return $arguments[0] % $arguments[1];
+                'numeric, numeric' => function ($a, $b) {
+                    return $a % $b;
                 },
             ],
             '*' => function (string $identify, array $arguments) {
@@ -79,8 +79,10 @@ class Evaluation {
                     $function = $functions[$identify];
                     if (is_array($function)) {
                         $function = $argumentOverload($identify, $arguments, $function);
+                        return $function(...$arguments);
+                    } else {
+                        return $function($arguments);
                     }
-                    return $function($arguments);
                 } else {
                     return $functions['*']($identify, $arguments);
                 }
