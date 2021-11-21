@@ -106,3 +106,19 @@ $result = $evaluation("'abc' + 'def'"); // => 'abcdef'
 |Erros\SyntaxError|構文エラー|
 |Erros\UndefineFunctionError|未定義関数の呼び出し|
 |Erros\ArgumentError|パラメータチェックでのエラー|
+
+```php
+use Naotake51\Evaluation\Evaluation;
+use Naotake51\Evaluation\Errors\EvaluationError;
+
+try {
+    $evaluation = new Evaluation([
+        'hoge' => function (array $arguments) {
+            return 'hoge';
+        },
+    ]);
+    $result = $evaluation("fuga()"); // => UndefineFunctionError
+} catch (EvaluationError $e) {
+    error_log($e->getMessage()); // => 'function fuga is not exists.'
+}
+```

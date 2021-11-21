@@ -4,6 +4,7 @@ namespace Tests;
 
 use PHPUnit\Framework\TestCase;
 use Naotake51\Evaluation\Evaluation;
+use Naotake51\Evaluation\Errors\EvaluationError;
 use Naotake51\Evaluation\Errors\SyntaxError;
 use Naotake51\Evaluation\Errors\UndefineFunctionError;
 use Naotake51\Evaluation\Errors\ArgumentError;
@@ -318,5 +319,17 @@ class EvaluationTest extends TestCase {
         ]);
         $result = $evaluation("'abc' + 'def'"); // => 'abcdef'
         $this->assertSame('abcdef', $result);
+
+        try {
+            $evaluation = new Evaluation([
+                'hoge' => function (array $arguments) {
+                    return 'hoge';
+                },
+            ]);
+            $result = $evaluation("fuga()"); // => UndefineFunctionError
+        } catch (EvaluationError $e) {
+            error_log($e->getMessage()); // => 'function fuga is not exists.'
+            $this->assertSame($e->getMessage(), 'function fuga is not exists.');
+        }
     }
 }
