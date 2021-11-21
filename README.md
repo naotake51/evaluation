@@ -4,7 +4,9 @@ naotake51/evaluationは、簡易的に式評価モジュールを作成するた
 
 # 使い方
 
-```
+```php
+use Naotake51\Evaluation\Evaluation;
+
 $evaluation = new Evaluation([
     'square' => function (array $arguments) {
         return $arguments[0] * $arguments[0];
@@ -33,7 +35,7 @@ $result = $evaluation('square(2) + square(2)'); // => 8
 |*|定義されていない関数の呼び出しがあった場合に呼び出されます。|
 
 
-```
+```php
 $evaluation = new Evaluation([
     '__add' => function (array $arguments) {
         return "$arguments[0] + $arguments[1]";
@@ -42,7 +44,7 @@ $evaluation = new Evaluation([
 $result = $evaluation('1 + 2'); // => '1 + 2'
 ```
 
-```
+```php
 $evaluation = new Evaluation([
     '*' => function (string $identify, array $arguments) {
         return 'call' . $identify . '(' . implode(', ', $arguments). ')';
@@ -56,17 +58,6 @@ $result = $evaluation('hoge(1, 2)'); // => 'call hoge(1, 2)'
 arrayを渡す事で引数の型を定義することができます。
 '|'で区切ることでORを表現することも可能です。
 
-```
-$evaluation = new Evaluation([
-    'repeat' => [
-        'string, integer|null' => function (array $arguments) {
-            return str_repeat($arguments[0], $arguments[1] ?? 2);
-        },
-    ]
-]);
-$result = $evaluation("repeat('abc', 3)"); // => 'abcabcabc'
-```
-
 |定義|説明|
 |---|---|
 |numeric|is_numericでチェックします。|
@@ -78,11 +69,22 @@ $result = $evaluation("repeat('abc', 3)"); // => 'abcabcabc'
 |object|is_objectでチェックします。|
 |null|is_nullでチェックします。|
 
+```php
+$evaluation = new Evaluation([
+    'repeat' => [
+        'string, integer|null' => function (array $arguments) {
+            return str_repeat($arguments[0], $arguments[1] ?? 2);
+        },
+    ]
+]);
+$result = $evaluation("repeat('abc', 3)"); // => 'abcabcabc'
+```
+
 ## オーバーロード
 
 複数のパターンを登録することでオーバーロードできます。
 
-```
+```php
 $evaluation = new Evaluation([
     '__add' => [
         'string, string' => function (array $arguments) {
@@ -96,7 +98,7 @@ $evaluation = new Evaluation([
 $result = $evaluation("'abc' + 'def'"); // => 'abcdef'
 ```
 
-## 評価実行時エラー
+## 実行時エラー
 
 |クラス|説明|
 |---|---|
