@@ -22,6 +22,7 @@ $result = $evaluation('square(2) + square(2)'); // => 8
 |論理|True true TRUE False  false FALSE|
 |文字列|"aaa" 'aaa' 'aa\\'aa\\\\aa'|
 |配列|[1, 2, [3, 4]]|
+|オブジェクト|{'a': 1, 'b': {'c': 2}}|
 
 ## マジック関数
 

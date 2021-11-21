@@ -10,15 +10,18 @@ use Naotake51\Evaluation\Nodes\StringNode;
 use Naotake51\Evaluation\Nodes\BooleanNode;
 use Naotake51\Evaluation\Nodes\ArrayNode;
 use Naotake51\Evaluation\Nodes\FunctionNode;
+use Naotake51\Evaluation\Nodes\ObjectNode;
 use Naotake51\Evaluation\Errors\SyntaxError;
 
 /**
  * 構文解析モジュール
  *
  * expr    = mul ("+" mul | "-" mul)*
- * mul     = primary ("*" primary | "/" primary)*
- * primary = integer | float | string | boolean | array | "(" expr ")" | func
- * array   = "[" (expr ("+" expr)*)? "]"
+ * mul     = val ("*" val | "/" val)*
+ * val     = integer | float | string | boolean | array | primary | func
+ * primary = "(" expr ")"
+ * array   = "[" (expr ("," expr)*)? "]"
+ * object  = "{" (string ":" expr ("," string ":" expr)*)? "}"
  * func    = ident "(" (expr ("+" expr)*)? ")"
  */
 class Lexer {
@@ -64,17 +67,17 @@ class Lexer {
     }
 
     private function mul(array $tokens, int $p): array {
-        [$left, $p] = $this->primary($tokens, $p);
+        [$left, $p] = $this->val($tokens, $p);
         while ($this->equal($tokens, $p, 'OPERATOR', array_keys($this->mulOperators))) {
             $magicFunction = $this->mulOperators[$tokens[$p]->expression];
             $p++;
-            [$right, $p] = $this->primary($tokens, $p);
+            [$right, $p] = $this->val($tokens, $p);
             $left = new FunctionNode($magicFunction, [$left, $right]);
         }
         return [$left, $p];
     }
 
-    private function primary(array $tokens, int $p): array {
+    private function val(array $tokens, int $p): array {
         if ($this->equal($tokens, $p, 'INTEGER')) {
             return [new IntegerNode($tokens[$p]->expression), $p + 1];
         } else if ($this->equal($tokens, $p, 'FLOAT')) {
@@ -85,15 +88,45 @@ class Lexer {
             return [new BooleanNode($tokens[$p]->expression), $p + 1];
         } else if ($this->equal($tokens, $p, 'L_BRACKET')) {
             return $this->array($tokens, $p);
+        } else if ($this->equal($tokens, $p, 'L_BRACE')) {
+            return $this->object($tokens, $p);
         } else if ($this->equal($tokens, $p, 'L_PAREN')) {
-            $p++;
-            [$expr, $p] = $this->expr($tokens, $p);
-            $this->need($tokens, $p, 'R_PAREN');
-            $p++;
-            return [$expr, $p];
+            return $this->primary($tokens, $p);
         } else {
             return $this->func($tokens, $p);
         }
+    }
+
+    private function object(array $tokens, int $p): array {
+        $object = [];
+
+        $this->need($tokens, $p, 'L_BRACE');
+        $p++;
+
+        if (!$this->equal($tokens, $p, 'R_BRACE')) {
+            do {
+                $this->need($tokens, $p, 'STRING');
+                $key = new StringNode($tokens[$p]->expression);
+                $p++;
+                $this->need($tokens, $p, 'COLON');
+                $p++;
+                [$value, $p] = $this->expr($tokens, $p);
+                $object[] = ['key' => $key, 'value' => $value];
+            } while ($this->equal($tokens, $p, 'COMMA') && $p++);
+        }
+        $this->need($tokens, $p, 'R_BRACE');
+        $p++;
+
+        return [new ObjectNode($object), $p];
+    }
+
+    private function primary(array $tokens, int $p): array {
+        $this->need($tokens, $p, 'L_PAREN');
+        $p++;
+        [$expr, $p] = $this->expr($tokens, $p);
+        $this->need($tokens, $p, 'R_PAREN');
+        $p++;
+        return [$expr, $p];
     }
 
     private function array(array $tokens, int $p): array {

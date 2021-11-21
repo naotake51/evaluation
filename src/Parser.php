@@ -30,6 +30,9 @@ class Parser {
         ['/^\)/', 'R_PAREN'],
         ['/^\[/', 'L_BRACKET'],
         ['/^\]/', 'R_BRACKET'],
+        ['/^\{/', 'L_BRACE'],
+        ['/^\}/', 'R_BRACE'],
+        ['/^:/', 'COLON'],
         ['/^,/', 'COMMA'],
         ['/^[A-Za-z][A-Za-z_0-9]*/', 'IDENT'],
     ];

@@ -269,6 +269,44 @@ class EvaluationTest extends TestCase {
                 'expression' => '[1, 2, hoge(1, 2), [1, 2, fuga(True)]]',
                 'expected' => [1, 2, 'hoge(1, 2)', [1, 2, 'fuga(1)']]
             ],
+            'オブジェクト' => [
+                'functions' => [],
+                'expression' => "{'a': 1, 'b': 2, 'c': {'c1': 1, 'c2': 2}}",
+                'expected' => [
+                    'a' => 1,
+                    'b' => 2,
+                    'c' => [
+                        'c1' => 1,
+                        'c2' => 2,
+                    ],
+                ]
+            ],
+            'オブジェクト 関数含む' => [
+                'functions' => [
+                    'hoge' => function (array $arguments) {
+                        return 'hoge';
+                    }
+                ],
+                'expression' => "{'a': 1, 'b': 2, 'c': {'c1': hoge(1, true), 'c2': 2}}",
+                'expected' => [
+                    'a' => 1,
+                    'b' => 2,
+                    'c' => [
+                        'c1' => 'hoge',
+                        'c2' => 2,
+                    ],
+                ]
+            ],
+            'オブジェクト 関数のパラメーター' => [
+                'functions' => [
+                    'hoge' => function (array $arguments) {
+                        $object = $arguments[0];
+                        return "hoge:{$object['a']}:{$object['b']}";
+                    }
+                ],
+                'expression' => "hoge({'a': 1, 'b': 2})",
+                'expected' => "hoge:1:2"
+            ],
          ];
     }
 

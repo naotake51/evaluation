@@ -124,6 +124,32 @@ class ParserTest extends TestCase {
                     new Token('R_BRACKET', ']'),
                 ]
             ],
+            'オブジェクト' => [
+                'expression' => "{'a': 1, 'b': 2, 'c': {'c1': 1, 'c2': 2}}",
+                'expected' => [
+                    new Token('L_BRACE', '{'),
+                    new Token('STRING', "'a'"),
+                    new Token('COLON', ':'),
+                    new Token('INTEGER', '1'),
+                    new Token('COMMA', ','),
+                    new Token('STRING', "'b'"),
+                    new Token('COLON', ':'),
+                    new Token('INTEGER', '2'),
+                    new Token('COMMA', ','),
+                    new Token('STRING', "'c'"),
+                    new Token('COLON', ':'),
+                    new Token('L_BRACE', '{'),
+                    new Token('STRING', "'c1'"),
+                    new Token('COLON', ':'),
+                    new Token('INTEGER', '1'),
+                    new Token('COMMA', ','),
+                    new Token('STRING', "'c2'"),
+                    new Token('COLON', ':'),
+                    new Token('INTEGER', '2'),
+                    new Token('R_BRACE', '}'),
+                    new Token('R_BRACE', '}'),
+                ]
+            ],
        ];
     }
 }

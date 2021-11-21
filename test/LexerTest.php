@@ -11,6 +11,7 @@ use Naotake51\Evaluation\Nodes\FloatNode;
 use Naotake51\Evaluation\Nodes\StringNode;
 use Naotake51\Evaluation\Nodes\BooleanNode;
 use Naotake51\Evaluation\Nodes\ArrayNode;
+use Naotake51\Evaluation\Nodes\ObjectNode;
 use Naotake51\Evaluation\Nodes\FunctionNode;
 use Naotake51\Evaluation\Errors\SyntaxError;
 
@@ -317,6 +318,39 @@ class LexerTest extends TestCase {
                             new IntegerNode('1'),
                         ]
                     ),
+                ])
+            ],
+            'オブジェクト' => [
+                'tokens' => [
+                    new Token('L_BRACE', '{'),
+                    new Token('STRING', "'a'"),
+                    new Token('COLON', ':'),
+                    new Token('INTEGER', '1'),
+                    new Token('COMMA', ','),
+                    new Token('STRING', "'b'"),
+                    new Token('COLON', ':'),
+                    new Token('INTEGER', '2'),
+                    new Token('COMMA', ','),
+                    new Token('STRING', "'c'"),
+                    new Token('COLON', ':'),
+                    new Token('L_BRACE', '{'),
+                    new Token('STRING', "'c1'"),
+                    new Token('COLON', ':'),
+                    new Token('INTEGER', '1'),
+                    new Token('COMMA', ','),
+                    new Token('STRING', "'c2'"),
+                    new Token('COLON', ':'),
+                    new Token('INTEGER', '2'),
+                    new Token('R_BRACE', '}'),
+                    new Token('R_BRACE', '}'),
+                ],
+                'expected' => new ObjectNode([
+                    ['key' => new StringNode("'a'"), 'value' => new IntegerNode('1')],
+                    ['key' => new StringNode("'b'"), 'value' => new IntegerNode('2')],
+                    ['key' => new StringNode("'c'"), 'value' => new ObjectNode([
+                        ['key' => new StringNode("'c1'"), 'value' => new IntegerNode('1')],
+                        ['key' => new StringNode("'c2'"), 'value' => new IntegerNode('2')],
+                    ])],
                 ])
             ],
         ];
