@@ -2,29 +2,27 @@
 
 namespace Naotake51\Evaluation;
 
-use Naotake51\Evaluation\Errors\ArgumentError;
 use Closure;
 
 /**
- * パラメーターチェック用クラス
+ * パラメーターに対応するファンクションを解決する
  */
-class ArgumentOverload {
+class ArgumentsResolver {
     /**
-     * パラメーターチェック
+     * パラメーターに対応するファンクションを返す
      *
      * @param  string $identify
      * @param  array  $arguments
-     * @param  array  $define
-     * @return Closure
-     * @throws ArgumentError
+     * @param  array  $mappedArgsFunctions
+     * @return Closure|null
      */
-    public function __invoke(string $identify, array $arguments, array $define): Closure {
-        foreach ($define as $defineArguments => $function) {
+    public function __invoke(array $arguments, array $mappedArgsFunctions): ?Closure {
+        foreach ($mappedArgsFunctions as $defineArguments => $function) {
             if ($this->matchArguments($arguments, $defineArguments)) {
                 return $function;
             }
         }
-        throw new ArgumentError("function $identify arguments is not match (" . implode(') or (', array_keys($define)) . ').');
+        return null;
     }
 
     /**

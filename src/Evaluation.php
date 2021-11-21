@@ -43,10 +43,7 @@ class Evaluation {
                 'numeric, numeric' => function ($a, $b) {
                     return $a % $b;
                 },
-            ],
-            '*' => function (string $identify, array $arguments) {
-                throw new UndefineFunctionError("function $identify is not exists.");
-            }
+            ]
         ];
 
         $this->functions = $functions + $defaults;
@@ -72,19 +69,31 @@ class Evaluation {
         $rootNode = $lexer($tokens);
 
         $functions = $this->functions;
-        $argumentOverload = new ArgumentOverload();
+        $argumentsResolver = new ArgumentsResolver();
         return $rootNode->eval(
-            function ($identify, $arguments) use ($functions, $argumentOverload) {
+            // ファンクションや演算子を解決するコールバック
+            function ($identify, $arguments) use ($functions, $argumentsResolver) {
                 if (array_key_exists($identify, $functions)) {
                     $function = $functions[$identify];
+
                     if (is_array($function)) {
-                        $function = $argumentOverload($identify, $arguments, $function);
-                        return $function(...$arguments);
+                        // パラメーターのパターンごとにコールバックが設定されている
+                        $mappedArgsFunctions = $function;
+                        $resolveFunction = $argumentsResolver($arguments, $mappedArgsFunctions);
+                        if ($resolveFunction === null) {
+                            throw new ArgumentError("function $identify arguments is not match (" . implode(') or (', array_keys($mappedArgsFunctions)) . ').');
+                        }
+                        return $resolveFunction(...$arguments);
                     } else {
+                        // 関数名に対して１つコールバックが設定されている
                         return $function($arguments);
                     }
-                } else {
+                } else if (array_key_exists('*', $functions)) {
+                    // 関数名に対してコールバックが設定されていないが、'*'が登録されている
                     return $functions['*']($identify, $arguments);
+                } else {
+                    // 対応するコールバックなし
+                    throw new UndefineFunctionError("function $identify is not exists.");
                 }
             }
         );
