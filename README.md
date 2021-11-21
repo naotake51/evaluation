@@ -68,6 +68,7 @@ arrayを渡す事で引数の型を定義することができます。
 |array|is_arrayでチェックします。|
 |object|is_objectでチェックします。|
 |null|is_nullでチェックします。|
+|mixed|すべての型を許容します。|
 
 ```php
 $evaluation = new Evaluation([

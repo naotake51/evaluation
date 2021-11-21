@@ -76,6 +76,8 @@ class ArgumentOverload {
                 return true;
             } elseif ($type === 'null' && is_null($value)) {
                 return true;
+            } elseif ($type === 'mixed') {
+                return true;
             }
         }
         return false;
