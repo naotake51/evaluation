@@ -2,7 +2,8 @@
 
 namespace Naotake51\Evaluation;
 
-class Token {
+class Token
+{
     /** @var string */
     public string $type;
 
@@ -14,7 +15,8 @@ class Token {
      * @param  string $expression
      * @return void
      */
-    public function __construct(string $type, string $expression) {
+    public function __construct(string $type, string $expression)
+    {
         $this->type = $type;
         $this->expression = $expression;
     }

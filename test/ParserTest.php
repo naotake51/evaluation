@@ -7,12 +7,14 @@ use Naotake51\Evaluation\Parser;
 use Naotake51\Evaluation\Token;
 use Naotake51\Evaluation\Errors\SyntaxError;
 
-class ParserTest extends TestCase {
+class ParserTest extends TestCase
+{
     /**
      * @return void
      * @dataProvider dataInvoke
      */
-    public function testInvoke(string $expression, $expected): void {
+    public function testInvoke(string $expression, $expected): void
+    {
         try {
             $parser = new Parser();
             $tokens = $parser($expression);
@@ -20,9 +22,10 @@ class ParserTest extends TestCase {
         } catch (\Exception $e) {
             $this->assertEquals($expected, $e);
         }
-}
+    }
 
-    public function dataInvoke(): array {
+    public function dataInvoke(): array
+    {
         return [
             '四則演算' => [
                 'expression' => '1 + 1 - 1 * 1 / 1 % 1',
@@ -150,6 +153,6 @@ class ParserTest extends TestCase {
                     new Token('R_BRACE', '}'),
                 ]
             ],
-       ];
+        ];
     }
 }

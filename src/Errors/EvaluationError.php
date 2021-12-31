@@ -2,5 +2,6 @@
 
 namespace Naotake51\Evaluation\Errors;
 
-class EvaluationError extends \RuntimeException {
+class EvaluationError extends \RuntimeException
+{
 }

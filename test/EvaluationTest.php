@@ -10,7 +10,8 @@ use Naotake51\Evaluation\Errors\UndefineFunctionError;
 use Naotake51\Evaluation\Errors\ArgumentError;
 use Closure;
 
-class EvaluationTest extends TestCase {
+class EvaluationTest extends TestCase
+{
     /**
      * testInvoke
      *
@@ -21,7 +22,8 @@ class EvaluationTest extends TestCase {
      *
      * @dataProvider dataInvoke
      */
-    public function testInvoke(array $functions, string $expression, $expected): void {
+    public function testInvoke(array $functions, string $expression, $expected): void
+    {
         try {
             $evaluation = new Evaluation($functions);
             $result = $evaluation($expression);
@@ -31,7 +33,8 @@ class EvaluationTest extends TestCase {
         }
     }
 
-    public function dataInvoke(): array {
+    public function dataInvoke(): array
+    {
         return [
             '整数' => [
                 'functions' => [],
@@ -307,10 +310,11 @@ class EvaluationTest extends TestCase {
                 'expression' => "hoge({'a': 1, 'b': 2})",
                 'expected' => "hoge:1:2"
             ],
-         ];
+        ];
     }
 
-    public function testReadMe(): void {
+    public function testReadMe(): void
+    {
         $evaluation = new Evaluation([
             'square' => function (array $arguments) {
                 return $arguments[0] * $arguments[0];
@@ -329,7 +333,7 @@ class EvaluationTest extends TestCase {
 
         $evaluation = new Evaluation([
             '*' => function (string $identify, array $arguments) {
-                return 'call ' . $identify . '(' . implode(', ', $arguments). ')';
+                return 'call ' . $identify . '(' . implode(', ', $arguments) . ')';
             }
         ]);
         $result = $evaluation('hoge(1, 2)'); // => 'call hoge(1, 2)'

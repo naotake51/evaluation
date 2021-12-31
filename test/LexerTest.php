@@ -15,7 +15,8 @@ use Naotake51\Evaluation\Nodes\ObjectNode;
 use Naotake51\Evaluation\Nodes\FunctionNode;
 use Naotake51\Evaluation\Errors\SyntaxError;
 
-class LexerTest extends TestCase {
+class LexerTest extends TestCase
+{
     /**
      * testInvoke
      *
@@ -25,7 +26,8 @@ class LexerTest extends TestCase {
      *
      * @dataProvider dataInvoke
      */
-    public function testInvoke(array $tokens, $expected): void {
+    public function testInvoke(array $tokens, $expected): void
+    {
         try {
             $lexer = new Lexer();
             $root = $lexer($tokens);
@@ -35,7 +37,8 @@ class LexerTest extends TestCase {
         }
     }
 
-    public function dataInvoke(): array {
+    public function dataInvoke(): array
+    {
         return [
             '整数' => [
                 'tokens' => [

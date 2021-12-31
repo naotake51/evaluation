@@ -7,7 +7,8 @@ use Closure;
 /**
  * パラメーターに対応するファンクションを解決する
  */
-class ArgumentsResolver {
+class ArgumentsResolver
+{
     /**
      * パラメーターに対応するファンクションを返す
      *
@@ -16,7 +17,8 @@ class ArgumentsResolver {
      * @param  array  $mappedArgsFunctions
      * @return Closure|null
      */
-    public function __invoke(array $arguments, array $mappedArgsFunctions): ?Closure {
+    public function __invoke(array $arguments, array $mappedArgsFunctions): ?Closure
+    {
         foreach ($mappedArgsFunctions as $defineArguments => $function) {
             if ($this->matchArguments($arguments, $defineArguments)) {
                 return $function;
@@ -33,7 +35,8 @@ class ArgumentsResolver {
      * @return bool
      * @throws ArgumentError
      */
-    private function matchArguments(array $arguments, string $defineArguments): bool {
+    private function matchArguments(array $arguments, string $defineArguments): bool
+    {
         $defineArgs = explode(',', $defineArguments);
         if (count($defineArgs) !== count($arguments)) {
             return false;
@@ -55,7 +58,8 @@ class ArgumentsResolver {
      * @param  string $defineArg
      * @return bool
      */
-    private function matchType($value, string $defineArg): bool {
+    private function matchType($value, string $defineArg): bool
+    {
         foreach (explode('|', $defineArg) as $type) {
             $type = trim($type);
             if ($type === 'numeric' && is_numeric($value)) {

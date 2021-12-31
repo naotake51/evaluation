@@ -10,14 +10,16 @@ use Closure;
 /**
  * 式評価クラス
  */
-class Evaluation {
+class Evaluation
+{
     /** @var Closure[] */
     private array $functions;
 
     /**
      * @param  @var (Closure|array)[] $functions
      */
-    public function __construct(array $functions) {
+    public function __construct(array $functions)
+    {
         $defaults = [
             '__add' => [
                 'numeric, numeric' => function ($a, $b) {
@@ -58,7 +60,8 @@ class Evaluation {
      * @throws UndefineFunctionError
      * @throws ArgumentError
      */
-    public function __invoke(string $expression) {
+    public function __invoke(string $expression)
+    {
         $parser = new Parser();
         $tokens = $parser($expression);
         if (count($tokens) === 0) {

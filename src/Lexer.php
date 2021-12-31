@@ -24,7 +24,8 @@ use Naotake51\Evaluation\Errors\SyntaxError;
  * object  = "{" (string ":" expr ("," string ":" expr)*)? "}"
  * func    = ident "(" (expr ("+" expr)*)? ")"
  */
-class Lexer {
+class Lexer
+{
     private $exprOperators = [
         '+' => '__add',
         '-' => '__sub',
@@ -43,7 +44,8 @@ class Lexer {
      * @return Node
      * @throws SyntaxError
      */
-    public function __invoke(array $tokens): Node {
+    public function __invoke(array $tokens): Node
+    {
         if (count($tokens) === 0) {
             throw new SyntaxError('empty tokens.');
         }
@@ -55,7 +57,8 @@ class Lexer {
         return $root;
     }
 
-    private function expr(array $tokens, int $p): array {
+    private function expr(array $tokens, int $p): array
+    {
         [$left, $p] = $this->mul($tokens, $p);
         while ($this->equal($tokens, $p, 'OPERATOR', array_keys($this->exprOperators))) {
             $magicFunction = $this->exprOperators[$tokens[$p]->expression];
@@ -66,7 +69,8 @@ class Lexer {
         return [$left, $p];
     }
 
-    private function mul(array $tokens, int $p): array {
+    private function mul(array $tokens, int $p): array
+    {
         [$left, $p] = $this->val($tokens, $p);
         while ($this->equal($tokens, $p, 'OPERATOR', array_keys($this->mulOperators))) {
             $magicFunction = $this->mulOperators[$tokens[$p]->expression];
@@ -77,7 +81,8 @@ class Lexer {
         return [$left, $p];
     }
 
-    private function val(array $tokens, int $p): array {
+    private function val(array $tokens, int $p): array
+    {
         if ($this->equal($tokens, $p, 'INTEGER')) {
             return [new IntegerNode($tokens[$p]->expression), $p + 1];
         } else if ($this->equal($tokens, $p, 'FLOAT')) {
@@ -97,7 +102,8 @@ class Lexer {
         }
     }
 
-    private function object(array $tokens, int $p): array {
+    private function object(array $tokens, int $p): array
+    {
         $object = [];
 
         $this->need($tokens, $p, 'L_BRACE');
@@ -120,7 +126,8 @@ class Lexer {
         return [new ObjectNode($object), $p];
     }
 
-    private function primary(array $tokens, int $p): array {
+    private function primary(array $tokens, int $p): array
+    {
         $this->need($tokens, $p, 'L_PAREN');
         $p++;
         [$expr, $p] = $this->expr($tokens, $p);
@@ -129,7 +136,8 @@ class Lexer {
         return [$expr, $p];
     }
 
-    private function array(array $tokens, int $p): array {
+    private function array(array $tokens, int $p): array
+    {
         $this->need($tokens, $p, 'L_BRACKET');
         $p++;
 
@@ -145,7 +153,8 @@ class Lexer {
         return [new ArrayNode($items), $p];
     }
 
-    private function func(array $tokens, int $p): array {
+    private function func(array $tokens, int $p): array
+    {
         $this->need($tokens, $p, 'IDENT');
         $identify = $tokens[$p]->expression;
         $p++;
@@ -165,21 +174,22 @@ class Lexer {
         return [new FunctionNode($identify, $arguments), $p];
     }
 
-    private function equal(array $tokens, int $p, string $type, $expression = null): bool {
+    private function equal(array $tokens, int $p, string $type, $expression = null): bool
+    {
         if (!($p < count($tokens))) {
             return false;
         }
 
         $token = $tokens[$p];
         return $token->type === $type &&
-            (
-                $expression === null ||
+            ($expression === null ||
                 (is_string($expression) && $token->expression === $expression) ||
                 (is_array($expression) && in_array($token->expression, $expression, true))
             );
     }
 
-    private function need(array $tokens, int $p, string $type, $expression = null) {
+    private function need(array $tokens, int $p, string $type, $expression = null)
+    {
         if (!$this->equal($tokens, $p, $type, $expression)) {
             throw new SyntaxError('syntax error.');
         }

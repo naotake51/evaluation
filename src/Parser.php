@@ -7,7 +7,8 @@ use Naotake51\Evaluation\Errors\SyntaxError;
 /**
  * 字句解析モジュール
  */
-class Parser {
+class Parser
+{
     private $parsedTokens = [
         ['/^\s+/', 'WHITE_SPACE'],
         ['/^[0-9]*\.[0-9]+/', 'FLOAT'],
@@ -44,7 +45,8 @@ class Parser {
      * @return Token[]
      * @throws SyntaxError
      */
-    public function __invoke(string $expression): array {
+    public function __invoke(string $expression): array
+    {
         $p = 0;
         $tokens = [];
         while ($p < strlen($expression)) {
@@ -60,7 +62,8 @@ class Parser {
         return $tokens;
     }
 
-    private function matchToken($expression) {
+    private function matchToken($expression)
+    {
         foreach ($this->parsedTokens as [$pattern, $type]) {
             if (preg_match($pattern, $expression, $match)) {
                 return new Token($type, $match[0]);
