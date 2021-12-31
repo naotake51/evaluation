@@ -153,6 +153,41 @@ class ParserTest extends TestCase
                     new Token('R_BRACE', '}'),
                 ]
             ],
+            '論理演算' => [
+                'expression' => '1 === 1 && 1 !== 1 || 1 == 1 && 1 != 1',
+                'expected' => [
+                    new Token('INTEGER', '1'),
+                    new Token('OPERATOR', '==='),
+                    new Token('INTEGER', '1'),
+                    new Token('OPERATOR', '&&'),
+                    new Token('INTEGER', '1'),
+                    new Token('OPERATOR', '!=='),
+                    new Token('INTEGER', '1'),
+                    new Token('OPERATOR', '||'),
+                    new Token('INTEGER', '1'),
+                    new Token('OPERATOR', '=='),
+                    new Token('INTEGER', '1'),
+                    new Token('OPERATOR', '&&'),
+                    new Token('INTEGER', '1'),
+                    new Token('OPERATOR', '!='),
+                    new Token('INTEGER', '1'),
+                ]
+            ],
+            '論理演算 NOT' => [
+                'expression' => '1 === !1 && !!1 !== 1',
+                'expected' => [
+                    new Token('INTEGER', '1'),
+                    new Token('OPERATOR', '==='),
+                    new Token('OPERATOR', '!'),
+                    new Token('INTEGER', '1'),
+                    new Token('OPERATOR', '&&'),
+                    new Token('OPERATOR', '!'),
+                    new Token('OPERATOR', '!'),
+                    new Token('INTEGER', '1'),
+                    new Token('OPERATOR', '!=='),
+                    new Token('INTEGER', '1'),
+                ]
+            ],
         ];
     }
 }

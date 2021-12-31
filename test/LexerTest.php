@@ -356,6 +356,77 @@ class LexerTest extends TestCase
                     ])],
                 ])
             ],
+            '論理演算' => [
+                'tokens' => [
+                    new Token('INTEGER', '1'),
+                    new Token('OPERATOR', '==='),
+                    new Token('INTEGER', '1'),
+                    new Token('OPERATOR', '&&'),
+                    new Token('INTEGER', '1'),
+                    new Token('OPERATOR', '!=='),
+                    new Token('INTEGER', '1'),
+                    new Token('OPERATOR', '||'),
+                    new Token('INTEGER', '1'),
+                    new Token('OPERATOR', '=='),
+                    new Token('INTEGER', '1'),
+                    new Token('OPERATOR', '&&'),
+                    new Token('INTEGER', '1'),
+                    new Token('OPERATOR', '!='),
+                    new Token('INTEGER', '1'),
+                ],
+                'expected' => new FunctionNode('__or', [
+                    new FunctionNode('__and', [
+                        new FunctionNode('__equal_strict', [
+                            new IntegerNode('1'),
+                            new IntegerNode('1'),
+                        ]),
+                        new FunctionNode('__not_equal_strict', [
+                            new IntegerNode('1'),
+                            new IntegerNode('1'),
+                        ]),
+                    ]),
+                    new FunctionNode('__and', [
+                        new FunctionNode('__equal', [
+                            new IntegerNode('1'),
+                            new IntegerNode('1'),
+                        ]),
+                        new FunctionNode('__not_equal', [
+                            new IntegerNode('1'),
+                            new IntegerNode('1'),
+                        ]),
+                    ]),
+                ]),
+            ],
+            '論理演算 NOT' => [
+                'tokens' => [
+                    new Token('INTEGER', '1'),
+                    new Token('OPERATOR', '==='),
+                    new Token('OPERATOR', '!'),
+                    new Token('INTEGER', '1'),
+                    new Token('OPERATOR', '&&'),
+                    new Token('OPERATOR', '!'),
+                    new Token('OPERATOR', '!'),
+                    new Token('INTEGER', '1'),
+                    new Token('OPERATOR', '!=='),
+                    new Token('INTEGER', '1'),
+                ],
+                'expected' => new FunctionNode('__and', [
+                    new FunctionNode('__equal_strict', [
+                        new IntegerNode('1'),
+                        new FunctionNode('__not', [
+                            new IntegerNode('1'),
+                        ]),
+                    ]),
+                    new FunctionNode('__not_equal_strict', [
+                        new FunctionNode('__not', [
+                            new FunctionNode('__not', [
+                                new IntegerNode('1'),
+                            ]),
+                        ]),
+                        new IntegerNode('1'),
+                    ]),
+                ]),
+            ],
         ];
     }
 }

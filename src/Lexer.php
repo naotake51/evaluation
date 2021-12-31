@@ -16,8 +16,13 @@ use Naotake51\Evaluation\Errors\SyntaxError;
 /**
  * 構文解析モジュール
  *
- * expr    = mul ("+" mul | "-" mul)*
- * mul     = val ("*" val | "/" val)*
+ * expr    = or
+ * or      = and ("||" and)*
+ * and     = compare ("&&" compare)*
+ * compare = add ("===" add | "!==" add| "==" add| "!=" add)*
+ * add     = mul ("+" mul | "-" mul)*
+ * mul     = not ("*" not | "/" not)*
+ * not     = ("!" not | val)*
  * val     = integer | float | string | boolean | array | primary | func
  * primary = "(" expr ")"
  * array   = "[" (expr ("," expr)*)? "]"
@@ -26,7 +31,22 @@ use Naotake51\Evaluation\Errors\SyntaxError;
  */
 class Lexer
 {
-    private $exprOperators = [
+    private $orOperators = [
+        '||' => '__or',
+    ];
+
+    private $andOperators = [
+        '&&' => '__and',
+    ];
+
+    private $compareOperators = [
+        '===' => '__equal_strict',
+        '!==' => '__not_equal_strict',
+        '==' => '__equal',
+        '!=' => '__not_equal',
+    ];
+
+    private $addOperators = [
         '+' => '__add',
         '-' => '__sub',
     ];
@@ -35,6 +55,10 @@ class Lexer
         '*' => '__mul',
         '/' => '__div',
         '%' => '__mod',
+    ];
+
+    private $notOperators = [
+        '!' => '__not',
     ];
 
     /**
@@ -59,9 +83,50 @@ class Lexer
 
     private function expr(array $tokens, int $p): array
     {
+        return $this->or($tokens, $p);
+    }
+
+    private function or(array $tokens, int $p): array
+    {
+        [$left, $p] = $this->and($tokens, $p);
+        while ($this->equal($tokens, $p, 'OPERATOR', array_keys($this->orOperators))) {
+            $magicFunction = $this->orOperators[$tokens[$p]->expression];
+            $p++;
+            [$right, $p] = $this->and($tokens, $p);
+            $left = new FunctionNode($magicFunction, [$left, $right]);
+        }
+        return [$left, $p];
+    }
+
+    private function and(array $tokens, int $p): array
+    {
+        [$left, $p] = $this->compare($tokens, $p);
+        while ($this->equal($tokens, $p, 'OPERATOR', array_keys($this->andOperators))) {
+            $magicFunction = $this->andOperators[$tokens[$p]->expression];
+            $p++;
+            [$right, $p] = $this->compare($tokens, $p);
+            $left = new FunctionNode($magicFunction, [$left, $right]);
+        }
+        return [$left, $p];
+    }
+
+    private function compare(array $tokens, int $p): array
+    {
+        [$left, $p] = $this->add($tokens, $p);
+        while ($this->equal($tokens, $p, 'OPERATOR', array_keys($this->compareOperators))) {
+            $magicFunction = $this->compareOperators[$tokens[$p]->expression];
+            $p++;
+            [$right, $p] = $this->add($tokens, $p);
+            $left = new FunctionNode($magicFunction, [$left, $right]);
+        }
+        return [$left, $p];
+    }
+
+    private function add(array $tokens, int $p): array
+    {
         [$left, $p] = $this->mul($tokens, $p);
-        while ($this->equal($tokens, $p, 'OPERATOR', array_keys($this->exprOperators))) {
-            $magicFunction = $this->exprOperators[$tokens[$p]->expression];
+        while ($this->equal($tokens, $p, 'OPERATOR', array_keys($this->addOperators))) {
+            $magicFunction = $this->addOperators[$tokens[$p]->expression];
             $p++;
             [$right, $p] = $this->mul($tokens, $p);
             $left = new FunctionNode($magicFunction, [$left, $right]);
@@ -71,14 +136,26 @@ class Lexer
 
     private function mul(array $tokens, int $p): array
     {
-        [$left, $p] = $this->val($tokens, $p);
+        [$left, $p] = $this->not($tokens, $p);
         while ($this->equal($tokens, $p, 'OPERATOR', array_keys($this->mulOperators))) {
             $magicFunction = $this->mulOperators[$tokens[$p]->expression];
             $p++;
-            [$right, $p] = $this->val($tokens, $p);
+            [$right, $p] = $this->not($tokens, $p);
             $left = new FunctionNode($magicFunction, [$left, $right]);
         }
         return [$left, $p];
+    }
+
+    private function not(array $tokens, int $p): array
+    {
+        if ($this->equal($tokens, $p, 'OPERATOR', array_keys($this->notOperators))) {
+            $magicFunction = $this->notOperators[$tokens[$p]->expression];
+            $p++;
+            [$val, $p] = $this->not($tokens, $p);
+            return [new FunctionNode($magicFunction, [$val]), $p];
+        } else {
+            return $this->val($tokens, $p);
+        }
     }
 
     private function val(array $tokens, int $p): array

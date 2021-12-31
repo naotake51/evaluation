@@ -27,6 +27,13 @@ class Parser
         ['/^\//', 'OPERATOR'],
         ['/^%/', 'OPERATOR'],
         ['/^\./', 'OPERATOR'], // 文字列連結 NOTE:小数点数時より後である必要がある
+        ['/^===/', 'OPERATOR'],
+        ['/^!==/', 'OPERATOR'],
+        ['/^==/', 'OPERATOR'],
+        ['/^!=/', 'OPERATOR'],
+        ['/^&&/', 'OPERATOR'],
+        ['/^\|\|/', 'OPERATOR'],
+        ['/^!/', 'OPERATOR'],
         ['/^\(/', 'L_PAREN'],
         ['/^\)/', 'R_PAREN'],
         ['/^\[/', 'L_BRACKET'],

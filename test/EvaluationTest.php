@@ -310,6 +310,31 @@ class EvaluationTest extends TestCase
                 'expression' => "hoge({'a': 1, 'b': 2})",
                 'expected' => "hoge:1:2"
             ],
+            '論理演算子' => [
+                'functions' => [],
+                'expression' => "1 === 1 && 2 !== 1",
+                'expected' => true
+            ],
+            '論理演算子 2' => [
+                'functions' => [],
+                'expression' => "1 === 1 && 2 !== 2",
+                'expected' => false
+            ],
+            '論理演算子 3' => [
+                'functions' => [],
+                'expression' => "1 === 1 || 2 !== 2",
+                'expected' => true
+            ],
+            '論理演算子 4' => [
+                'functions' => [],
+                'expression' => "1 === 1 && !!!(2 !== 2)",
+                'expected' => true
+            ],
+            '論理演算子 5' => [
+                'functions' => [],
+                'expression' => "1 === 1 && !!!(2 !== 2) || 1 === 2",
+                'expected' => true
+            ],
         ];
     }
 

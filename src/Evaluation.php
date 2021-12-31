@@ -45,7 +45,42 @@ class Evaluation
                 'numeric, numeric' => function ($a, $b) {
                     return $a % $b;
                 },
-            ]
+            ],
+            '__equal_strict' => [
+                'mixed, mixed' => function ($a, $b) {
+                    return $a === $b;
+                },
+            ],
+            '__not_equal_strict' => [
+                'mixed, mixed' => function ($a, $b) {
+                    return $a !== $b;
+                },
+            ],
+            '__equal' => [
+                'mixed, mixed' => function ($a, $b) {
+                    return $a == $b;
+                },
+            ],
+            '__not_equal' => [
+                'mixed, mixed' => function ($a, $b) {
+                    return $a != $b;
+                },
+            ],
+            '__and' => [
+                'mixed, mixed' => function ($a, $b) {
+                    return $a && $b;
+                },
+            ],
+            '__or' => [
+                'mixed, mixed' => function ($a, $b) {
+                    return $a || $b;
+                },
+            ],
+            '__not' => [
+                'mixed' => function ($a) {
+                    return !$a;
+                },
+            ],
         ];
 
         $this->functions = $functions + $defaults;
