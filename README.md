@@ -1,8 +1,8 @@
-# 概要
-naotake51/evaluationは、簡易的に式評価モジュールを作成するためのComposerパッケージです。
-自前の関数を登録して、式（文字列）を評価する事ができます。
+# Overview
+naotake51/evaluation is a Composer package for creating a simple expression evaluation module.
+It allows you to register your own functions to evaluate expressions (strings).
 
-# 使い方
+# Using
 
 ```php
 use Naotake51\Evaluation\Evaluation;
@@ -14,18 +14,18 @@ $evaluation = new Evaluation([
 ]);
 $result = $evaluation('square(2) + square(2)'); // => 8
 ```
-## リテラル
-|タイプ|例|
+## Literal
+|type|example|
 |---|---|
-|整数|123|
-|小数|0.5 .5|
-|論理|True true TRUE False  false FALSE|
-|文字列|"aaa" 'aaa' 'aa\\'aa\\\\aa'|
-|配列|[1, 2, [3, 4]]|
-|オブジェクト|{'a': 1, 'b': {'c': 2}}|
+|int|123|
+|float|0.5 .5|
+|boolean|True true TRUE False  false FALSE|
+|string|"aaa" 'aaa' 'aa\\'aa\\\\aa'|
+|array|[1, 2, [3, 4]]|
+|object|{'a': 1, 'b': {'c': 2}}|
 
-## 演算子と優先順位
-|演算子|例|
+## Operators and precedence
+|Operator|example|
 |---|---|
 |!|!true|
 |* / %|5 * 2|
@@ -34,22 +34,22 @@ $result = $evaluation('square(2) + square(2)'); // => 8
 |&&|true && false|
 |\|\||true \|\| false|
 
-## マジック関数
+## Magic function
 
-|識別子|説明|
+|identifier|description|
 |---|---|
-|__add|2項演算子'+'をオーバーライドします。|
-|__sub|2項演算子'-'をオーバーライドします。|
-|__mul|2項演算子'*'をオーバーライドします。|
-|__div|2項演算子'/'をオーバーライドします。|
-|__mod|2項演算子'%'をオーバーライドします。|
-|__or|2項演算子'\|\|'をオーバーライドします。|
-|__and|2項演算子'&&'をオーバーライドします。|
-|__equal|2項演算子'=='をオーバーライドします。|
-|__not_equal|2項演算子'!='をオーバーライドします。|
-|__equal_strict|2項演算子'==='をオーバーライドします。|
-|__not_equal_strict|2項演算子'!=='をオーバーライドします。|
-|__not|単項演算子'!'をオーバーライドします。|
+|__add|Override the binary operator '+'.|
+|__sub|Override the binary operator '-'.|
+|__mul|Override the binary operator '*'.|
+|__div|Override the binary operator '/'.|
+|__mod|Override the binary operator '%'.|
+|__or|Override the binary operator '\|\|'.|
+|__and|Override the binary operator '&&'.|
+|__equal|Override the binary operator '=='.|
+|__not_equal|Override the binary operator '!='.|
+|__equal_strict|Override the binary operator '==='.|
+|__not_equal_strict|Override the binary operator '!=='.|
+|__not|Override the unary operator '!'.|
 
 
 ```php
@@ -70,22 +70,22 @@ $evaluation = new Evaluation([
 $result = $evaluation('hoge(1, 2)'); // => 'call hoge(1, 2)'
 ```
 
-## パラメーターチェック
+## Parameter check
 
-arrayを渡す事で引数の型を定義することができます。
-'|'で区切ることでORを表現することも可能です。
+By passing an array, you can define the type of the argument.
+It is also possible to express OR by separating with '|'.
 
-|定義|説明|
+|definition|description|
 |---|---|
-|numeric|is_numericでチェックします。|
-|integer|is_integerでチェックします。|
-|float|is_floatでチェックします。|
-|string|is_stringでチェックします。|
-|bool|is_boolでチェックします。|
-|array|is_arrayでチェックします。|
-|object|is_objectでチェックします。|
-|null|is_nullでチェックします。|
-|mixed|すべての型を許容します。|
+|numeric|Check with 'is_numeric'.|
+|integer|Check with 'is_integer'.|
+|float|Check with 'is_float'.|
+|string|Check with 'is_string'.|
+|bool|Check with 'is_bool'.|
+|array|Check with 'is_array'.|
+|object|Check with 'is_object'.|
+|null|Check with 'is_null'.|
+|mixed|All types are allowed.|
 
 ```php
 $evaluation = new Evaluation([
@@ -98,9 +98,9 @@ $evaluation = new Evaluation([
 $result = $evaluation("repeat('abc', 3)"); // => 'abcabcabc'
 ```
 
-## オーバーロード
+## Overload
 
-複数のパターンを登録することでオーバーロードできます。
+Multiple patterns can be overloaded by registering them.
 
 ```php
 $evaluation = new Evaluation([
@@ -116,14 +116,14 @@ $evaluation = new Evaluation([
 $result = $evaluation("'abc' + 'def'"); // => 'abcdef'
 ```
 
-## 実行時エラー
+## Run-time error
 
-|クラス|説明|
+|class|description|
 |---|---|
-|Erros\EvaluationError|評価時に起こるエラーの基底クラス|
-|Erros\SyntaxError|構文エラー|
-|Erros\UndefineFunctionError|未定義関数の呼び出し|
-|Erros\ArgumentError|パラメータチェックでのエラー|
+|Erros\EvaluationError|Base class for errors that occur during evaluation.|
+|Erros\SyntaxError|syntactic error.|
+|Erros\UndefineFunctionError|Calling an undefined function.|
+|Erros\ArgumentError|Error in parameter check.|
 
 ```php
 use Naotake51\Evaluation\Evaluation;
