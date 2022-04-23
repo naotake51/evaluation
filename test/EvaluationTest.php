@@ -395,7 +395,6 @@ class EvaluationTest extends TestCase
             ]);
             $result = $evaluation("fuga()"); // => UndefineFunctionError
         } catch (EvaluationError $e) {
-            error_log($e->getMessage()); // => 'function fuga is not exists.'
             $this->assertSame($e->getMessage(), 'function fuga is not exists.');
         }
     }
