@@ -1,2 +1,5 @@
-/vendor
-/.phpunit.result.cache
+composer.phar
+composer.lock
+/vendor/
+
+.phpunit.result.cache
