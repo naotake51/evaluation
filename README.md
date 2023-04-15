@@ -120,10 +120,10 @@ $result = $evaluation("'abc' + 'def'"); // => 'abcdef'
 
 |class|description|
 |---|---|
-|Erros\EvaluationError|Base class for errors that occur during evaluation.|
-|Erros\SyntaxError|syntactic error.|
-|Erros\UndefineFunctionError|Calling an undefined function.|
-|Erros\ArgumentError|Error in parameter check.|
+|Errors\EvaluationError|Base class for errors that occur during evaluation.|
+|Errors\SyntaxError|syntactic error.|
+|Errors\UndefineFunctionError|Calling an undefined function.|
+|Errors\ArgumentError|Error in parameter check.|
 
 ```php
 use Naotake51\Evaluation\Evaluation;
