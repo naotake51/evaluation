@@ -97,14 +97,14 @@ class Evaluation
      */
     public function __invoke(string $expression)
     {
-        $parser = new Parser();
-        $tokens = $parser($expression);
+        $lexer = new Lexer();
+        $tokens = $lexer($expression);
         if (count($tokens) === 0) {
             return null;
         }
 
-        $lexer = new Lexer();
-        $rootNode = $lexer($tokens);
+        $parser = new Parser();
+        $rootNode = $parser($tokens);
 
         $functions = $this->functions;
         $argumentsResolver = new ArgumentsResolver();
